@@ -59,4 +59,24 @@
     <servlet-name>MakeReservationServlet</servlet-name>
     <url-pattern>/MakeReservationServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>GetTablesServlet</display-name>
+    <servlet-name>GetTablesServlet</servlet-name>
+    <servlet-class>GetTablesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetTablesServlet</servlet-name>
+    <url-pattern>/GetTablesServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>LogoutServlet</display-name>
+    <servlet-name>LogoutServlet</servlet-name>
+    <servlet-class>LogoutServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/LogoutServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

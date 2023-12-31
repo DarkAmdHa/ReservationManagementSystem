@@ -33,7 +33,7 @@
             <input
               type="text"
               id="name"
-              name="name"
+              name="name" required
               class="mt-1 p-2 w-full border rounded-md"
             />
           </div>
@@ -44,7 +44,7 @@
             <input
               type="email"
               id="email"
-              name="email"
+              name="email" required
               class="mt-1 p-2 w-full border rounded-md"
             />
           </div>
@@ -57,7 +57,7 @@
             <input
               type="password"
               id="password"
-              name="password"
+              name="password" required
               class="mt-1 p-2 w-full border rounded-md"
             />
           </div>
@@ -69,11 +69,13 @@
             >
             <input
               type="password"
-              id="confirmPassword"
+              id="confirmPassword" required
               name="confirmPassword"
               class="mt-1 p-2 w-full border rounded-md"
             />
           </div>
+          <div id="errorContainer" class="text-red-500"></div>
+          
           <button
             type="submit"
             class="bg-green-500 text-white px-4 py-2 rounded-md transition hover:bg-green-600"
@@ -84,7 +86,7 @@
         <p class="mt-4 text-sm">
           Already have an account?
           <a
-            href="login.html"
+            href="/reservation_system/LoginServlet"
             class="text-green-500 transition hover:text-green-600 hover:underline"
             >Login here</a
           >.
@@ -92,5 +94,124 @@
       </div>
     </div>
 
-    <script src="register.js"></script>
+    <script>
+    
+    document.getElementById("registerForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const form = event.target;
+
+        // Client-side validation
+        const name = form.querySelector("#name").value;
+        const email = form.querySelector("#email").value;
+        const password = form.querySelector("#password").value;
+        const confirmPassword = form.querySelector("#confirmPassword").value;
+
+        const errorMessages = [];
+
+        // Validate name
+        if (name.length < 2) {
+            errorMessages.push("Name must be at least 2 characters");
+        }
+
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            errorMessages.push("Invalid email address");
+        }
+
+        // Validate password: Must be 8 character, one uppercase, one lowercase and one digit
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            errorMessages.push("Password must have at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character");
+        }
+
+        // Validate password match
+        if (password !== confirmPassword) {
+            errorMessages.push("Passwords do not match");
+        }
+
+        if (errorMessages.length > 0) {
+            // Display error messages and prevent form submission
+            displayErrorMessages(errorMessages);
+            return;
+        }else{
+        	document.getElementById("errorContainer").innerHTML = '';
+        }
+
+        // If client-side validation passed, submit the form to the server
+        fetch("/reservation_system/RegisterServlet", {
+            method: "POST",
+            body: new URLSearchParams({
+                name,
+                email,
+                password,
+              })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Registration failed");
+                }
+            })
+            .then(data => {
+                // Check the response data for registration result
+                handleServerResponse(data);
+            })
+            .catch(error => {
+                // Handle registration failure, show a generic error message
+                console.error("Registration error:", error);
+            });
+    });
+
+    function handleServerResponse(data) {
+        const errorContainer = document.getElementById("errorContainer");
+
+        switch (data.registrationResult) {
+            case "SUCCESS":
+                console.log("Registration successful");
+                window.location.href = "/reservation_system/ReservationsServlet";
+                break;
+            case "USER_ALREADY_EXISTS":
+                console.error("User already exists");
+                displayErrorMessages(["User with this email already exists"]);
+                break;
+            case "ERROR":
+                console.error("Registration error");
+                displayErrorMessages(["Registration error"]);
+                break;
+            case "INVALID_INPUTS":
+                // Update error container with server-side validation errors
+                displayErrorMessages(data.errorMessages);
+                break;
+            default:
+                console.error("Unexpected registration result");
+                displayErrorMessages(["Unexpected registration result"]);
+                break;
+        }
+    }
+
+    function displayErrorMessages(errorMessages) {
+        const errorContainer = document.getElementById("errorContainer");
+        errorContainer.innerHTML = ""; // Clear previous error messages
+
+        if (errorMessages && errorMessages.length > 0) {
+            const errorList = document.createElement("ul");
+            errorList.classList.add('mb-4', 'list-disc')
+            errorMessages.forEach(message => {
+                const listItem = document.createElement("li");
+                listItem.className = 'opacity-0 transition transform translate-y-2 duration-100';
+                listItem.textContent = message;
+                errorList.appendChild(listItem);
+            });
+            errorContainer.appendChild(errorList);
+            setTimeout(() => {
+                errorContainer.querySelectorAll('li').forEach(listItem => listItem.className = 'opacity-1 transition transform translate-y-0 duration-100')
+
+            }, 100)
+        }
+    }
+
+    </script>
    <h:footer/>

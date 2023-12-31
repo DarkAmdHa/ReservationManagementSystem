@@ -12,5 +12,7 @@
 	<classpathentry kind="lib" path="C:/Users/DELL/Downloads/eclipse-jee-2023-12-R-win32-x86_64/Apache/apache-tomcat-10.1.15/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="C:/Users/DELL/Downloads/eclipse-jee-2023-12-R-win32-x86_64/Apache/apache-tomcat-10.1.15/webapps/examples/WEB-INF/lib/taglibs-standard-impl-1.2.5-migrated-0.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/DELL/Downloads/eclipse-jee-2023-12-R-win32-x86_64/Apache/apache-tomcat-10.1.15/webapps/examples/WEB-INF/lib/taglibs-standard-spec-1.2.5-migrated-0.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DELL/eclipse-workspace/reservation_system/src/main/webapp/WEB-INF/lib/mysql-connector-java-8.0.30.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gson_lib"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

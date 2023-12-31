@@ -1,25 +1,22 @@
 
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 
 /**
- * Servlet implementation class ReservationsServlet
+ * Servlet implementation class LogoutServlet
  */
-public class ReservationsServlet extends HttpServlet {
+public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ReservationsServlet() {
+    public LogoutServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -29,18 +26,7 @@ public class ReservationsServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		 HttpSession session = request.getSession();
-         // Check if the user is already logged in
-         if (session.getAttribute("user") == null) {
-        	 //If so,redirect
-        	 response.sendRedirect(request.getContextPath() + "/LoginServlet");
-        	 return;
-         }
-         
-         
-         
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/reservations.jsp");
-        dispatcher.forward(request, response);
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**

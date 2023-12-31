@@ -21,69 +21,39 @@
 	        
 	        
       <nav class="px-6 flex flex-col gap-2 h-full">
-        <a
-          href="ReservationsServlet"
- 	      <c:choose>
-		     <c:when test="${from eq 'ReservationsServlet'}">
-				class="transition rounded flex gap-2 items-center py-1 px-3 text-white bg-green-500 pointer-events-none"
-		
-		     </c:when>
-		     <c:otherwise>
-		     class="transition rounded flex gap-2 items-center py-1 px-3 hover:text-green-500 hover:bg-gray-100"
-		        
-		     </c:otherwise>
-		 </c:choose>
-        	>
-          <i class="fas fa-tachometer-alt" aria-hidden="true"></i> My Reservations
-        </a>
-        <a
-          href="MakeReservationServlet"
-          	      <c:choose>
-		     <c:when test="${from eq 'MakeReservationServlet'}">
-				class="transition rounded flex gap-2 items-center py-1 px-3 text-white bg-green-500 pointer-events-none"
-		
-		     </c:when>
-		     <c:otherwise>
-		     class="transition rounded flex gap-2 items-center py-1 px-3 hover:text-green-500 hover:bg-gray-100"
-		        
-		     </c:otherwise>
-		 </c:choose>
 
-        >
-          <i class="fas fa-book" aria-hidden="true"></i> Make a Reservation
-        </a>
-
-        <a
-          href="ProfileEditServlet"
-                   	      <c:choose>
-		     <c:when test="${from eq 'ProfileEditServlet'}">
-				class="transition rounded flex gap-2 items-center py-1 px-3 text-white bg-green-500 pointer-events-none"
-		
-		     </c:when>
-		     <c:otherwise>
-		     class="transition rounded flex gap-2 items-center py-1 px-3 hover:text-green-500 hover:bg-gray-100"
-		        
-		     </c:otherwise>
-		 </c:choose>
-        >
-          <i class="fas fa-user-edit" aria-hidden="true"></i> Edit Profile
-        </a>
-        <a
-          href="ChangePasswordServlet"
-                             	      <c:choose>
-		     <c:when test="${from eq 'ChangePasswordServlet'}">
-				class="transition rounded flex gap-2 items-center py-1 px-3 text-white bg-green-500 pointer-events-none"
-		
-		     </c:when>
-		     <c:otherwise>
-		     class="transition rounded flex gap-2 items-center py-1 px-3 hover:text-green-500 hover:bg-gray-100"
-		        
-		     </c:otherwise>
-		 </c:choose>
-
-        >
-          <i class="fas fa-key" aria-hidden="true"></i> Change Password
-        </a>
+      	<c:forEach var="link" items="${['ReservationsServlet', 'MakeReservationServlet', 'ProfileEditServlet', 'ChangePasswordServlet']}">
+      	    <c:set var="linkText" />
+    		<c:set var="fontAwesomeIcon" />
+    		
+    		<c:choose>
+		      <c:when test="${link eq 'ReservationsServlet'}">
+		        <c:set var="linkText" value="My Reservations" />
+		        <c:set var="fontAwesomeIcon" value="fa-tachometer-alt" />
+		      </c:when>
+		      <c:when test="${link eq 'MakeReservationServlet'}">
+		        <c:set var="linkText" value="Make a Reservation" />
+		        <c:set var="fontAwesomeIcon" value="fa-book" />
+		      </c:when>
+		      <c:when test="${link eq 'ProfileEditServlet'}">
+		        <c:set var="linkText" value="Edit Profile" />
+		        <c:set var="fontAwesomeIcon" value="fa-user-edit" />
+		      </c:when>
+		      <c:when test="${link eq 'ChangePasswordServlet'}">
+		        <c:set var="linkText" value="Change Password" />
+		        <c:set var="fontAwesomeIcon" value="fa-key" />
+		      </c:when>
+		    </c:choose>
+		    
+		    <a
+		      href="${link}"
+		      class="transition rounded flex gap-2 items-center py-1 px-3 
+		        ${from eq link ? 'text-white bg-green-500 pointer-events-none' : 'hover:text-green-500 hover:bg-gray-100'}"
+		    >
+		      <i class="fas ${fontAwesomeIcon}" aria-hidden="true"></i> ${linkText}
+		    </a>
+      	</c:forEach>
+        
         <form action="LogoutServlet" method="post" class="px-3 mt-auto mb-10">
           <button
             type="submit"
