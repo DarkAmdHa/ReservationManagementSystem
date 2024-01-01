@@ -49,8 +49,9 @@ public class RegisterServlet extends HttpServlet {
                  switch (registrationResult) {
                  case SUCCESS:
                      // Set a session attribute to indicate the user is logged in
-                     HttpSession session = request.getSession();
-                     session.setAttribute("user", user);
+                     // User needs to be activated first, so commenting this out:
+                	 //HttpSession session = request.getSession();
+                	 //session.setAttribute("user", user);
 
                      JsonObject successResponse = new JsonObject();
                      successResponse.addProperty("registrationResult", "SUCCESS");

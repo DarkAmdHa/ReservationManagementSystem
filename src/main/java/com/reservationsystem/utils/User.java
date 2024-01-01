@@ -8,23 +8,50 @@ import java.util.List;
 import com.reservationsystem.utils.DatabaseUtils;
 
 public class User {
+    private int id;
     private String name;
     private String email;
     private String password;
     private String role;
     private Boolean isActive;
+    private String avatarUrl;
 
-
-    public User(String name, String email, String password, String role, Boolean isAcitve) {
+    // Constructor without isActive and id (optional)
+    public User(String name, String email, String password, String role) {
         this.name = name;
         this.email = email.toLowerCase();
         this.password = password;
         this.role = role;
-        this.isActive = isAcitve || false;
+        this.isActive = false; // Set a default value
+        this.avatarUrl = "";
+    }
+    
+    // Constructor with isActive (optional)
+    public User(String name, String email, String password, String role, Boolean isActive) {
+        this(name, email, password, role); // Call the constructor without isActive and id
+        this.isActive = isActive;
+    }
+    
+    // Constructor with isActive and id and avatarUrl
+    public User(String name, String email, String password, String role, Boolean isActive, int id, String avatarUrl) {
+        this(name, email, password, role, isActive); // Call the constructor with isActive
+        this.id = id;
+        this.avatarUrl = avatarUrl;
     }
 
-    // Getters and setters
+    
 
+    
+    
+    // Getters and setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public String getName() {
         return name;
     }
@@ -55,6 +82,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+    
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
     
     public static RegistrationResult registerUser(String name, String email, String password) {
@@ -108,7 +143,9 @@ public class User {
                         resultSet.getString("email"),
                         resultSet.getString("password"),
                         resultSet.getString("role"),
-                        resultSet.getBoolean("isActive")
+                        resultSet.getBoolean("isActive"),
+                        resultSet.getInt("id"),
+                        resultSet.getString("avatarUrl")
                 );
                 return user;
             } else {
@@ -144,6 +181,45 @@ public class User {
         } else {
             // User not found or account is not active
             return LoginResult.INVALID_CREDENTIALS;
+        }
+    }
+    
+    
+    public List<Reservation> getUserReservations() {
+        String query = "SELECT reservation.reservationId, reservation.date, reservation.approvalStatus, reservation.startTime, "
+                + "reservation.endTime, room.roomName,restauranttable.tableName  "
+                + "FROM reservation "
+                + "JOIN restauranttable ON reservation.tableId = restauranttable.tableId "
+                + "JOIN room ON restauranttable.RoomId = room.roomId "
+                + "WHERE reservation.userId = ?";
+
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, this.id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Reservation> reservations = new ArrayList<>();
+
+            while (resultSet.next()) {
+                Reservation reservation = new Reservation();
+                reservation.setId(resultSet.getInt("reservationId"));
+                reservation.setDate(resultSet.getDate("date"));
+                reservation.setStartTime(resultSet.getString("startTime"));
+                reservation.setEndTime(resultSet.getString("endTime"));
+                reservation.setTableName(resultSet.getString("tableName"));
+                reservation.setRoom(resultSet.getString("roomName"));
+                reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+
+                reservations.add(reservation);
+            }
+
+            return reservations;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, log error, etc.
+            return null;
         }
     }
 }

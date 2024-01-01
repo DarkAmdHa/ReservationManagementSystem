@@ -7,6 +7,32 @@
 
 <div class="bg-white p-8 rounded shadow-md w-96">
   <h2 class="text-2xl font-semibold mb-6">Login</h2>
+  <%
+
+// Check if the "loggedOut" parameter is present in the URL
+boolean loggedOut = request.getParameter("loggedOut") != null;
+boolean notLoggedIn = request.getParameter("notLoggedIn") != null;
+
+// If "loggedOut" parameter is present, display an alert
+if (loggedOut) {
+%>
+    <div class='bg-green-100 p-2 text-xs mb-2 rounded-lg fadeUp logoutMsg'>You have been logged out.</div>
+    
+    <script>setTimeout(()=>{
+    	document.querySelector('.logoutMsg').remove();
+    },2500)</script>
+<%
+}else if (notLoggedIn){
+%>
+    <div class='bg-red-100 p-2 text-xs mb-2 rounded-lg fadeUp loginMsg'>Please login first.</div>
+    
+    <script>setTimeout(()=>{
+    	document.querySelector('.loginMsg').remove();
+    },2500)</script>
+<%
+}
+%>
+
   <form id="loginForm">
     <div class="mb-4">
       <label for="email" class="block text-gray-600 text-sm font-medium">Email:</label>
@@ -25,6 +51,7 @@
   </p>
 </div>
 
+   
 <script>
 document.getElementById("loginForm").addEventListener("submit", function (event) {
     event.preventDefault();

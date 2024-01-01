@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class LogoutServlet
@@ -25,8 +26,17 @@ public class LogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+        // Get the user's session
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            // Invalidate the session
+            session.invalidate();
+        }
+
+        // Redirect to the login page after logout
+        response.sendRedirect(request.getContextPath() + "/LoginServlet?loggedOut=true");
 	}
 
 	/**

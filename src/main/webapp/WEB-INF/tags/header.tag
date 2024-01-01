@@ -31,6 +31,23 @@
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
     }
+    .fadeUp {
+    transition: 0.5s ease;
+    animation: fadeup 0.5s ease-in-out forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+@keyframes fadeup {
+    0%{
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
     
     .submitButton:disabled{
     	opacity: 0.60;

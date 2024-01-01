@@ -9,6 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.List;
+
+import com.reservationsystem.utils.Reservation;
+import com.reservationsystem.utils.User;
 
 /**
  * Servlet implementation class ReservationsServlet
@@ -33,15 +37,30 @@ public class ReservationsServlet extends HttpServlet {
          // Check if the user is already logged in
          if (session.getAttribute("user") == null) {
         	 //If so,redirect
-        	 response.sendRedirect(request.getContextPath() + "/LoginServlet");
+        	 response.sendRedirect(request.getContextPath() + "/LoginServlet?notLoggedIn=true");
         	 return;
          }
          
          
          
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/reservations.jsp");
-        dispatcher.forward(request, response);
+      // Retrieve user information from the session
+         User user = (User) session.getAttribute("user");
+         int userId = user.getId();
+         
+         // Retrieve reservations for the user
+         List<Reservation> userReservations = user.getUserReservations();
+
+         // Set user information as request attributes
+         request.setAttribute("userName", user.getName());
+         request.setAttribute("userEmail", user.getEmail());
+         request.setAttribute("userId", userId);
+         request.setAttribute("userAvatarUrl", user.getAvatarUrl());
+         request.setAttribute("userReservations", userReservations);
+
+         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/reservations.jsp");
+         dispatcher.forward(request, response);
 	}
+
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

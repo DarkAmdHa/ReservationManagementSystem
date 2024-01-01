@@ -6,23 +6,27 @@
     >
       <div class="mb-4 px-6 py-3 border-b border-gray-200">
         <img
-          src="https://picsum.photos/100"
+     <c:choose>
+            <c:when test="${not empty userAvatarUrl}">
+                src="${userAvatarUrl}"
+            </c:when>
+            <c:otherwise>
+                src="${pageContext.request.contextPath}/static/images/avatar.jpg"
+            </c:otherwise>
+        </c:choose>
+
           width="80px"
           height="80px"
           class="m-auto rounded-full overflow-hidden"
         />
         <a href="ProfileEditServlet">
-          <p class="text-center mt-2 text-gray-500">Hi [Username]</p>
+          <p class="text-center mt-2 text-gray-500">Hi ${userName}</p>
         </a>
       </div>
-
-
-
-	        
 	        
       <nav class="px-6 flex flex-col gap-2 h-full">
 
-      	<c:forEach var="link" items="${['ReservationsServlet', 'MakeReservationServlet', 'ProfileEditServlet', 'ChangePasswordServlet']}">
+      	<c:forEach var="link" items="${['ReservationsServlet', 'MakeReservationServlet', 'EditProfileServlet', 'ActivityLogServlet']}">
       	    <c:set var="linkText" />
     		<c:set var="fontAwesomeIcon" />
     		
@@ -35,13 +39,13 @@
 		        <c:set var="linkText" value="Make a Reservation" />
 		        <c:set var="fontAwesomeIcon" value="fa-book" />
 		      </c:when>
-		      <c:when test="${link eq 'ProfileEditServlet'}">
+		      <c:when test="${link eq 'EditProfileServlet'}">
 		        <c:set var="linkText" value="Edit Profile" />
 		        <c:set var="fontAwesomeIcon" value="fa-user-edit" />
 		      </c:when>
-		      <c:when test="${link eq 'ChangePasswordServlet'}">
-		        <c:set var="linkText" value="Change Password" />
-		        <c:set var="fontAwesomeIcon" value="fa-key" />
+   		      <c:when test="${link eq 'ActivityLogServlet'}">
+		        <c:set var="linkText" value="Login Activity" />
+		        <c:set var="fontAwesomeIcon" value="fa-user" />
 		      </c:when>
 		    </c:choose>
 		    
