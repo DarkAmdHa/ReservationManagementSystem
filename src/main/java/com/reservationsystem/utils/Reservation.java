@@ -10,13 +10,14 @@ public class Reservation {
     private String tableName;
     private String room;
     private String approvalStatus;
+    private String notes;
 
     // Constructors
     public Reservation() {
         // Default constructor
     }
 
-    public Reservation(int id, Date date, String startTime, String endTime, String tableName, String room, String approvalStatus) {
+    public Reservation(int id, Date date, String startTime, String endTime, String tableName, String room, String approvalStatus, String notes) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -24,6 +25,7 @@ public class Reservation {
         this.tableName = tableName;
         this.room = room;
         this.approvalStatus = approvalStatus;
+        this.notes = notes;
     }
 
     // Getters and setters
@@ -82,6 +84,14 @@ public class Reservation {
 
     public String getApprovalStatus() {
         return approvalStatus;
+    }
+    
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getNotes() {
+        return notes;
     }
     
 }

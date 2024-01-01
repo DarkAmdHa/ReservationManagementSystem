@@ -7,10 +7,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
+import com.reservationsystem.utils.Reservation;
 import com.reservationsystem.utils.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/EditProfileServlet")
 @MultipartConfig
@@ -28,11 +30,16 @@ public class EditProfileServlet extends HttpServlet {
         }
         
         
+        // Retrieve user information from the session
         User user = (User) session.getAttribute("user");
+        int userId = user.getId();
 
         // Set user information as request attributes
         request.setAttribute("userName", user.getName());
         request.setAttribute("userEmail", user.getEmail());
+        request.setAttribute("userId", userId);
+        request.setAttribute("userAvatarUrl", user.getAvatarUrl());
+
 
         // Forward to the editProfile.jsp page
         request.getRequestDispatcher("/WEB-INF/editProfile.jsp").forward(request, response);

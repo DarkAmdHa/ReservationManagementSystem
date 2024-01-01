@@ -77,7 +77,8 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
         class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
       ></textarea>
     </div>
-
+	<ul class='submissionErrors text-sm text-red-500'>
+	</ul>
     <div class="flex items-center justify-between">
       <button
         type="submit"
@@ -291,7 +292,7 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
         tableSelectorContainer.innerHTML = `
             	   <div id="customSelector" class=" ">
-            	    	<div class="flex justify-between max-w-full allRooms flex-wrap gap-2">
+            	    	<div class="flex max-w-full allRooms flex-wrap gap-2">
             	    		
             	    	</div>
             	    </div>
@@ -305,7 +306,7 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
         organizedRooms.forEach((room, index) => {
           tableSelectorContainer.querySelector(".allRooms").innerHTML += `
 	            	   <input type="radio" id="${"${room.roomName}"}" name="roomSelector" class="hidden" ${'${index==0 && "checked"}'}>
-            	      <label for="${"${room.roomName}"}" class="roomTab cursor-pointer bg-gray-500 hover:bg-green-500 transition text-white py-2 px-4 rounded-md min-w-20 w-20 flex items-center justify-center min-w-custom-100">${"${room.roomName}"}</label>
+            	      <label for="${"${room.roomName}"}" class="roomTab cursor-pointer bg-gray-500 hover:bg-green-500 transition text-white py-2 px-4 rounded-md w-auto flex items-center justify-center">${"${room.roomName}"}</label>
 	               `;
 
           tableSelectorContainer.querySelector(
@@ -431,17 +432,37 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
         );
 
         if (response.ok) {
-          // Handle success, e.g., show a success message or redirect to another page
-          console.log("Reservation successfully submitted");
+          //No server crashes, check response:
+          const data = await response.json();
+          if(data.status === 'success'){
+        	  alert(data.message);
+        	  window.location.href='${pageContext.request.contextPath}/ReservationsServlet';
+          }else{
+        	  pushError(data.message);
+          }
         } else {
-          // Handle error, e.g., show an error message
-          console.error("Error submitting reservation:", response.statusText);
-          alert("Something went wrong.");
+          console.error("Error submitting reservation:", error);
+          pushError('The reservation couldn\'t be submitted.')
         }
       } catch (error) {
         console.error("Error submitting reservation:", error);
-        alert("Something went wrong.");
+        pushError('Something went wrong on the server. We\'re working on it!')
       }
     });
+  
+  const pushError =(msg, success=false) => {
+	  const li = document.createElement('li');
+	  li.innerText = msg;
+	  li.classList.add('fadeup');
+	  if(!success){
+		  li.classList.add('text-red-500')
+	  }else{
+		  li.classList.add('text-green-500')
+	  }
+	  document.querySelector('.submissionError').appendChild(li);  
+	  setTimeout(()=>{
+		  li.remove();
+	  },2000)
+  }
 </script>
 <h:footer />

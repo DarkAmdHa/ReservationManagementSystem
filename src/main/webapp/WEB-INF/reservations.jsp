@@ -22,6 +22,9 @@
             >Add Reservation</a>
         </c:when>
         <c:otherwise>
+
+
+
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 		    <c:forEach var="reservation" items="${userReservations}" varStatus="loop">
     <div class="<c:choose>
@@ -32,7 +35,7 @@
                    <c:otherwise>bg-gray-200</c:otherwise>
                </c:choose>
                p-4 rounded-md shadow-md transition transform hover:scale-105 text-gray-700">
-        <h3 class="text-lg font-semibold mb-2">Reservation ${loop.index + 1}</h3>
+
         <div class="flex items-center text-sm pb-3 gap-4">
             <div class="border-r border-gray-300 pr-4">
                 <p class="font-bold">${reservation.room}</p>
@@ -55,10 +58,21 @@
 </c:forEach>
 
 		</div>
-
-
-
         </c:otherwise>
     </c:choose>
+    
+    <!-- Pagination Controls -->
+    
+<c:if test="${totalPages > 1}">
+    <div class="pagination flex items-center justify-center gap-2 pt-4">
+        <c:forEach begin="1" end="${totalPages}" var="page">
+            <a href="${pageContext.request.contextPath}/ReservationsServlet?page=${page}"
+               class="px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:bg-gray-300 ${currentPage == page ? 'bg-green-500 text-white pointer-events-none' : ''}">
+                ${page}
+            </a>
+        </c:forEach>
+    </div>
+</c:if>
+
 </main>
       <h:footer/>

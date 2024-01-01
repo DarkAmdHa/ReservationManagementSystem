@@ -18,6 +18,7 @@ import com.reservationsystem.utils.User;
  * Servlet implementation class ReservationsServlet
  */
 public class ReservationsServlet extends HttpServlet {
+	int PAGE_SIZE = 6;
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -49,13 +50,26 @@ public class ReservationsServlet extends HttpServlet {
          
          // Retrieve reservations for the user
          List<Reservation> userReservations = user.getUserReservations();
+         
+         // Pagination logic
+         String pageStr = request.getParameter("page");
+         int currentPage = pageStr != null ? Integer.parseInt(pageStr) : 1;
+         int startIndex = (currentPage - 1) * PAGE_SIZE;
+         int endIndex = Math.min(startIndex + PAGE_SIZE, userReservations.size());
+         
+      // Extract the sublist for the current page
+         List<Reservation> currentReservations = userReservations.subList(startIndex, endIndex);
 
          // Set user information as request attributes
          request.setAttribute("userName", user.getName());
          request.setAttribute("userEmail", user.getEmail());
          request.setAttribute("userId", userId);
          request.setAttribute("userAvatarUrl", user.getAvatarUrl());
-         request.setAttribute("userReservations", userReservations);
+         request.setAttribute("userReservations", currentReservations);
+         
+      // Pagination information
+         request.setAttribute("currentPage", currentPage);
+         request.setAttribute("totalPages", (int) Math.ceil((double) userReservations.size() / PAGE_SIZE));
 
          RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/reservations.jsp");
          dispatcher.forward(request, response);
