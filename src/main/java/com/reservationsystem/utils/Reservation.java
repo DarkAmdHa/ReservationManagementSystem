@@ -1,6 +1,10 @@
 package com.reservationsystem.utils;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Reservation {
     private int id;
@@ -92,6 +96,43 @@ public class Reservation {
 
     public String getNotes() {
         return notes;
+    }
+    
+ // Fetch reservation details by ID
+    public static Reservation getReservationById(int reservationId) {
+        Reservation reservation = null;
+
+        String query = "SELECT r.*, rt.name as roomName, rt.name as tableName" +
+        		"FROM reservation r" +
+        		"JOIN restauranttable rt ON r.tableId = rt.id" +
+        		"JOIN room rm ON rt.roomId = rm.id" + 
+        		"WHERE r.id = ?";
+        
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, reservationId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    Date date = resultSet.getDate("date");
+                    String startTime = resultSet.getString("startTime");
+                    String endTime = resultSet.getString("endTime");
+                    String tableName = resultSet.getString("tableName");
+                    String room = resultSet.getString("room");
+                    String approvalStatus = resultSet.getString("approvalStatus");
+                    String notes = resultSet.getString("notes");
+
+                    reservation = new Reservation(id, date, startTime, endTime, tableName, room, approvalStatus, notes);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+        }
+
+        return reservation;
     }
     
 }

@@ -69,7 +69,7 @@ public class MakeReservationServlet extends HttpServlet {
         List<Table> tables = new ArrayList<>();
 
         // Use a prepared statement with a parameterized query
-        String query = "SELECT * FROM restauranttable WHERE RoomId = ?";
+        String query = "SELECT * FROM restauranttable WHERE roomId = ?";
 
         try (Connection connection = DatabaseUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -99,14 +99,14 @@ public class MakeReservationServlet extends HttpServlet {
     private List<Room> getRoomsFromDatabase() {
         List<Room> rooms = new ArrayList<>();
 
-        String query = "SELECT roomId, roomName FROM room";
+        String query = "SELECT id, name FROM room";
         try (Connection connection = DatabaseUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("roomId");
-                String name = resultSet.getString("roomName");
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
                 Room room = new Room(id, name);
                 rooms.add(room);
             }

@@ -99,4 +99,14 @@
     <servlet-name>ActivityLogServlet</servlet-name>
     <url-pattern>/ActivityLogServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ViewReservationDetails</display-name>
+    <servlet-name>ViewReservationDetails</servlet-name>
+    <servlet-class>ViewReservationDetails</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ViewReservationDetails</servlet-name>
+    <url-pattern>/ViewReservationDetails</url-pattern>
+  </servlet-mapping>
 </web-app>

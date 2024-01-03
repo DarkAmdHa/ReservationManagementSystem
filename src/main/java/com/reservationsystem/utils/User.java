@@ -213,11 +213,11 @@ public class User {
     
     
     public List<Reservation> getUserReservations() {
-        String query = "SELECT reservation.reservationId, reservation.date, reservation.approvalStatus, "
+        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, "
                 + "reservation.startTime, reservation.endTime, room.roomName, restauranttable.tableName "
                 + "FROM reservation "
-                + "JOIN restauranttable ON reservation.tableId = restauranttable.tableId "
-                + "JOIN room ON restauranttable.RoomId = room.roomId "
+                + "JOIN restauranttable ON reservation.tableId = restauranttable.id "
+                + "JOIN room ON restauranttable.roomId = room.id "
                 + "WHERE reservation.userId = ? "
                 + "ORDER BY reservation.date ASC, reservation.startTime ASC;";
 

@@ -57,7 +57,7 @@
                        </c:choose>
             </span>
         </p>
-        <a href="ViewReservationDetails" class="underline text-green-500">View Details</a>
+        <a href="${pageContext.request.contextPath}/ViewReservationDetails?id=${reservation.id}" class="underline text-green-500">View Details</a>
     </div>
 </c:forEach>
 

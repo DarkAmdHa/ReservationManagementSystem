@@ -61,33 +61,11 @@ import com.google.gson.Gson;
 	        List<Table> tables = new ArrayList<>();
 	        Set<Integer> uniqueTableIds = new HashSet<>();
 	        // Use a prepared statement with a parameterized query
-	        /*String query = "SELECT rt.*, ro.roomName, r.* " +
-	                "FROM restauranttable rt " +
-	                "LEFT JOIN reservation r ON rt.tableId = r.tableId " +
-	                "LEFT JOIN room ro ON rt.RoomId = ro.roomId " +
-	                "WHERE (" +
-	                "    (r.startTime IS NULL OR r.endTime IS NULL) " +
-	                "    OR (" +
-	                "        r.date = ? " +
-	                "        AND (" +
-	                "            r.approvalStatus IS NULL " +
-	                "            OR r.approvalStatus != 'APPROVED' " +
-	                "            OR NOT (" +
-	                "                (r.startTime > ? AND r.startTime < ?) OR " +
-	                "                (r.endTime > ? AND r.endTime < ?)" +
-	                "            )" +
-	                "        )" +
-	                "    )" +
-	                "    OR r.date != ? " +
-	                "    OR r.date IS NULL " +
-	                "    OR r.approvalStatus IS NULL " +
-	                "    OR r.approvalStatus != 'APPROVED'" +
-	                ");";*/
 	        
-	        String query = "SELECT DISTINCT  rt.*, ro.roomName, r.* " +
+	        String query = "SELECT DISTINCT  rt.*, ro.name as roomName, r.* " +
 	                "FROM restauranttable rt " +
-	                "LEFT JOIN room ro ON rt.RoomId = ro.roomId " +
-	                "LEFT JOIN reservation r ON rt.tableId = r.tableId " +
+	                "LEFT JOIN room ro ON rt.roomId = ro.id " +
+	                "LEFT JOIN reservation r ON rt.id = r.tableId " +
 	                "WHERE r.tableId IS NULL " +
 	                "   OR r.date != ? " +
 	                "   OR (" +
@@ -112,12 +90,7 @@ import com.google.gson.Gson;
 	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 	
 	            // Set the parameters for the prepared statement
-	           /* preparedStatement.setString(1, selectedDate);
-	            preparedStatement.setString(2, startTime);
-	            preparedStatement.setString(3, endTime);
-	            preparedStatement.setString(4, startTime);
-	            preparedStatement.setString(5, endTime);
-	            preparedStatement.setString(6, selectedDate);*/
+
 	        	
 	            preparedStatement.setString(1, selectedDate);
 	            preparedStatement.setString(2, selectedDate);
@@ -139,7 +112,7 @@ import com.google.gson.Gson;
 	                    if (uniqueTableIds.add(id)) {
 	                        String name = resultSet.getString("tableName");
 	                        String capacity = resultSet.getString("seatsCapacity");
-	                        int roomId = resultSet.getInt("RoomId");
+	                        int roomId = resultSet.getInt("roomId");
 	                        String roomName = resultSet.getString("roomName");
 	                        Table table = new Table(id, name, capacity, roomId, roomName);
 	                        tables.add(table);
