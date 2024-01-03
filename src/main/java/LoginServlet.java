@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import com.reservationsystem.utils.User;
+import com.reservationsystem.utils.LogUtils;
 import com.reservationsystem.utils.LoginResult;
 import java.io.IOException;
 
@@ -54,8 +55,12 @@ public class LoginServlet extends HttpServlet {
                 switch (loginResult) {
                     case SUCCESS:
                         // Set a session attribute to indicate the user is logged in
-                        session.setAttribute("user", User.getUserByEmail(email));
-
+                        User loggedInUser = User.getUserByEmail(email);
+                        session.setAttribute("user", loggedInUser);
+                        
+                        // Log user login
+                        LogUtils.logUserLogin(loggedInUser);
+                        
                         JsonObject successResponse = new JsonObject();
                         successResponse.addProperty("loginResult", "SUCCESS");
                         successResponse.addProperty("message", "Login successful");

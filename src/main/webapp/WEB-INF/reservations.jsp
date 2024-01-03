@@ -7,7 +7,11 @@
 
     <h:header title="Reservations" bodyClasses="font-sans bg-gray-100 flex min-h-screen"/>
 
-      <h:sidebar from='ReservationsServlet'/>
+
+
+      <h:sidebar from='ReservationsServlet' 
+      
+      />
   <main class="flex-1 p-10">
     <h2 class="text-xl font-semibold mb-4">Reservations</h2>
 

@@ -1,6 +1,13 @@
 <%@ tag language="java" pageEncoding="ISO-8859-1"%>
 <%@ attribute name="from" required="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+
+
+
 <aside
       class="bg-white w-1/6 text-gray-600 shadow-lg max-w-screen sticky flex flex-col"
     >
@@ -8,7 +15,7 @@
         <img
      <c:choose>
             <c:when test="${not empty userAvatarUrl}">
-                src="${userAvatarUrl}"
+                src="${pageContext.request.contextPath}/static/images/avatars/${userAvatarUrl}"
             </c:when>
             <c:otherwise>
                 src="${pageContext.request.contextPath}/static/images/avatar.jpg"
@@ -22,6 +29,22 @@
         <a href="ProfileEditServlet">
           <p class="text-center mt-2 text-gray-500">Hi ${userName}</p>
         </a>
+        
+        <%
+    String editedParam = request.getParameter("edited");
+    boolean isEdited = editedParam != null && editedParam.equals("true");
+if (isEdited) { %>
+        <div class='bg-green-100 p-2 text-xs mt-2 rounded-lg fadeUp text-center editMsg'>Profile Updated.</div>
+        <script>
+            setTimeout(() => {
+                document.querySelector('.editMsg').remove();
+            }, 2500);
+        </script>
+    <% } %>
+        
+       
+
+
       </div>
 	        
       <nav class="px-6 flex flex-col gap-2 h-full">

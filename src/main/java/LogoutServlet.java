@@ -6,6 +6,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import com.reservationsystem.utils.LogUtils;
+import com.reservationsystem.utils.User;
+
 import jakarta.servlet.http.HttpSession;
 
 /**
@@ -31,8 +35,14 @@ public class LogoutServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
 
         if (session != null) {
-            // Invalidate the session
+            // Log user logout
+            User user = (User) session.getAttribute("user");
+            if (user != null) {
+                LogUtils.logUserLogout(user);
+            }
+         // Invalidate the session
             session.invalidate();
+
         }
 
         // Redirect to the login page after logout

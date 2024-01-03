@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.reservationsystem.utils.DatabaseUtils;
+import com.reservationsystem.utils.LogUtils;
 import com.reservationsystem.utils.Reservation;
 import com.reservationsystem.utils.Room;
 import com.reservationsystem.utils.Table;
@@ -146,6 +147,7 @@ public class MakeReservationServlet extends HttpServlet {
             // Table is available, create reservation
             createReservation(user.getId(), tableId, date, startTime, endTime, notes);
 
+            LogUtils.logReservationCreation(user);
             // Provide success response
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("status", "success");

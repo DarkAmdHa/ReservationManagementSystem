@@ -58,6 +58,7 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+        updateFieldInDatabase("name", name);
     }
 
     public String getEmail() {
@@ -66,14 +67,19 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+        updateFieldInDatabase("email", email);
+
     }
 
     public String getPassword() {
         return password;
+
+
     }
 
     public void setPassword(String password) {
         this.password = password;
+        updateFieldInDatabase("password", password);
     }
 
     public String getRole() {
@@ -90,7 +96,28 @@ public class User {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+        updateFieldInDatabase("avatarUrl", avatarUrl);
+
     }
+    
+    private void updateFieldInDatabase(String fieldName, String value) {
+        String query = "UPDATE user SET " + fieldName + " = ? WHERE id = ?";
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, value);
+            preparedStatement.setInt(2, this.id);
+
+            // Execute the update query
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, log error, etc.
+        }
+    }
+
+    
     
     public static RegistrationResult registerUser(String name, String email, String password) {
             // Check if the email is already registered
@@ -222,6 +249,28 @@ public class User {
             // Handle exception, log error, etc.
             return null;
         }
+    }
+    
+    // Method to check if an email already exists in the system
+    public static boolean isEmailExists(String email) {
+        String query = "SELECT COUNT(*) FROM user WHERE email = ?";
+
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Check if there is at least one user with the given email
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                return true;  // Email exists
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, log error, etc.
+        }
+        return false; // Email does not exist or an error occurred
     }
 }
 

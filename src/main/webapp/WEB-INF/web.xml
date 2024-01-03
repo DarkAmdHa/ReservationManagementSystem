@@ -89,4 +89,14 @@
     <servlet-name>EditProfileServlet</servlet-name>
     <url-pattern>/EditProfileServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ActivityLogServlet</display-name>
+    <servlet-name>ActivityLogServlet</servlet-name>
+    <servlet-class>ActivityLogServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ActivityLogServlet</servlet-name>
+    <url-pattern>/ActivityLogServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

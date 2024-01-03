@@ -1,6 +1,7 @@
 <%@ tag language="java" pageEncoding="ISO-8859-1"%>
 <%@ attribute name="title" required="true" %>
 <%@ attribute name="bodyClasses" required="false" %>
+<%@ attribute name="additionalHeadersStuff" required="false" %>
 
 <html lang="en">
   <head>
@@ -18,6 +19,8 @@
       referrerpolicy="no-referrer"
     />
     <title>${title}</title>
+    
+    ${additionalHeadersStuff}
     
     
     <style>
