@@ -14,6 +14,28 @@
       />
   <main class="flex-1 p-10">
     <h2 class="text-xl font-semibold mb-4">Reservations</h2>
+    
+     <%
+    String resEditedParam = request.getParameter("reservationEdited");
+     String resDeletedParam = request.getParameter("reservationDeleted");
+    boolean resIsEdited = resEditedParam != null && resEditedParam.equals("true");
+    boolean resIsDeleted = resDeletedParam != null && resDeletedParam.equals("true");
+if (resIsEdited) { %>
+        <div class='bg-green-100 p-2 text-xs mt-2 rounded-lg fadeUp text-center resEditMsg px-32 mb-2'>Reservation Updated.</div>
+        <script>
+            setTimeout(() => {
+                document.querySelector('.resEditMsg').remove();
+            }, 2500);
+        </script>
+    <% }else if(resIsDeleted){ %>
+    <div class='bg-red-100 p-2 text-xs mt-2 rounded-lg fadeUp text-center resEditMsg px-32 mb-2'>Reservation Deleted.</div>
+        <script>
+            setTimeout(() => {
+                document.querySelector('.resEditMsg').remove();
+            }, 2500);
+        </script>
+    
+        <% }%>
 
     <c:choose>
         <c:when test="${empty userReservations}">
@@ -57,7 +79,7 @@
                        </c:choose>
             </span>
         </p>
-        <a href="${pageContext.request.contextPath}/ViewReservationDetails?id=${reservation.id}" class="underline text-green-500">View Details</a>
+        <a href="${pageContext.request.contextPath}/ViewReservationDetailsServlet?id=${reservation.id}" class="underline text-green-500">View Details</a>
     </div>
 </c:forEach>
 

@@ -127,7 +127,7 @@ public class MakeReservationServlet extends HttpServlet {
         // Check if the user is logged in
         if (session.getAttribute("user") == null) {
 	        JsonObject jsonResponse = new JsonObject();
-	        jsonResponse.addProperty("status", "error");
+	        jsonResponse.addProperty("status", "USER_SESSION_EXPIRED");
 	        jsonResponse.addProperty("message", "User session expired.");
 	
 	        response.setContentType("application/json");
@@ -215,6 +215,201 @@ public class MakeReservationServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
             // Handle database access error
+        }
+    }
+    
+    
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Retrieve user and reservation information from the request
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        // Check if the user is logged in
+        if (session.getAttribute("user") == null) {
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "USER_SESSION_EXPIRED");
+            jsonResponse.addProperty("message", "User session expired.");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+            return;
+        }
+
+        String reservationId = request.getParameter("id");
+        String date = request.getParameter("date");
+        String startTime = request.getParameter("startTime");
+        String endTime = request.getParameter("endTime");
+        String tableId = request.getParameter("tableId");
+        String notes = request.getParameter("notes");
+
+        // Check if the reservation ID is provided
+        if (reservationId == null || reservationId.isEmpty()) {
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "error");
+            jsonResponse.addProperty("message", "Reservation ID is missing.");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+            return;
+        }
+
+        // Check table availability for the given date and time
+        if (isTableAvailableForUpdate(reservationId, tableId, date, startTime, endTime)) {
+            // Table is available, update reservation
+            updateReservation(reservationId, tableId, date, startTime, endTime, notes);
+
+            LogUtils.logReservationEdit(user);
+
+            // Provide success response
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "success");
+            jsonResponse.addProperty("message", "Reservation updated successfully");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+        } else {
+            // Table is not available, provide error response
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "error");
+            jsonResponse.addProperty("message", "Selected table is not available for the specified date and time");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+        }
+    }
+
+    private boolean isTableAvailableForUpdate(String reservationId, String tableId, String date, String startTime, String endTime) {
+        // Perform a database query to check table availability for an update
+        String query = "SELECT * FROM reservation WHERE tableId = ? AND date = ? AND ((startTime >= ? AND startTime < ?) OR (endTime > ? AND endTime <= ?) AND id <> ?)";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Set parameters for the prepared statement
+            preparedStatement.setString(1, tableId);
+            preparedStatement.setString(2, date);
+            preparedStatement.setString(3, startTime);
+            preparedStatement.setString(4, endTime);
+            preparedStatement.setString(5, startTime);
+            preparedStatement.setString(6, endTime);
+            preparedStatement.setString(7, reservationId);
+
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                // If there are no overlapping reservations (excluding the current reservation), the table is available
+                return !resultSet.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+            return false;
+        }
+    }
+
+    private void updateReservation(String reservationId, String tableId, String date, String startTime, String endTime, String notes) {
+        // Perform a database query to update the existing reservation
+        String query = "UPDATE reservation SET tableId = ?, date = ?, startTime = ?, endTime = ?, notes = ? WHERE id = ?";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Set parameters for the prepared statement
+            preparedStatement.setString(1, tableId);
+            preparedStatement.setString(2, date);
+            preparedStatement.setString(3, startTime);
+            preparedStatement.setString(4, endTime);
+            preparedStatement.setString(5, notes);
+            preparedStatement.setString(6, reservationId);
+
+            // Execute the query
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+        }
+    }
+    
+    
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Retrieve user and reservation information from the request
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        // Check if the user is logged in
+        if (session.getAttribute("user") == null) {
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "USER_SESSION_EXPIRED");
+            jsonResponse.addProperty("message", "User session expired.");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+            return;
+        }
+
+        String reservationId = request.getParameter("id");
+
+        // Check if the reservation ID is provided
+        if (reservationId == null || reservationId.isEmpty()) {
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "error");
+            jsonResponse.addProperty("message", "Reservation ID is missing.");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+            return;
+        }
+
+        // Delete the reservation
+        if (deleteReservation(reservationId)) {
+            LogUtils.logReservationDeletion(user);
+
+            // Provide success response
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "success");
+            jsonResponse.addProperty("message", "Reservation deleted successfully");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+        } else {
+            // Error in deleting reservation
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("status", "error");
+            jsonResponse.addProperty("message", "Error deleting reservation");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new Gson().toJson(jsonResponse));
+        }
+    }
+
+    private boolean deleteReservation(String reservationId) {
+        // Perform a database query to delete the reservation
+        String query = "DELETE FROM reservation WHERE id = ?";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Set parameter for the prepared statement
+            preparedStatement.setString(1, reservationId);
+
+            // Execute the query
+            int rowsDeleted = preparedStatement.executeUpdate();
+            
+            // Check if the deletion was successful
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+            return false;
         }
     }
 }

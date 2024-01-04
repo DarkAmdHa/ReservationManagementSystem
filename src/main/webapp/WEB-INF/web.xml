@@ -101,12 +101,12 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>ViewReservationDetails</display-name>
-    <servlet-name>ViewReservationDetails</servlet-name>
-    <servlet-class>ViewReservationDetails</servlet-class>
+    <display-name>ViewReservationDetailsServlet</display-name>
+    <servlet-name>ViewReservationDetailsServlet</servlet-name>
+    <servlet-class>ViewReservationDetailsServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>ViewReservationDetails</servlet-name>
-    <url-pattern>/ViewReservationDetails</url-pattern>
+    <servlet-name>ViewReservationDetailsServlet</servlet-name>
+    <url-pattern>/ViewReservationDetailsServlet</url-pattern>
   </servlet-mapping>
 </web-app>

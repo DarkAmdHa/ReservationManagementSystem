@@ -102,11 +102,11 @@ public class Reservation {
     public static Reservation getReservationById(int reservationId) {
         Reservation reservation = null;
 
-        String query = "SELECT r.*, rt.name as roomName, rt.name as tableName" +
-        		"FROM reservation r" +
-        		"JOIN restauranttable rt ON r.tableId = rt.id" +
-        		"JOIN room rm ON rt.roomId = rm.id" + 
-        		"WHERE r.id = ?";
+        String query = "SELECT r.*, rt.name as roomName, rt.name as tableName " +
+        		"FROM reservation r " +
+        		"JOIN restauranttable rt ON r.tableId = rt.id " +
+        		"JOIN room rm ON rt.roomId = rm.id " + 
+        		"WHERE r.id = ? ";
         
         try (Connection connection = DatabaseUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -120,7 +120,7 @@ public class Reservation {
                     String startTime = resultSet.getString("startTime");
                     String endTime = resultSet.getString("endTime");
                     String tableName = resultSet.getString("tableName");
-                    String room = resultSet.getString("room");
+                    String room = resultSet.getString("roomName");
                     String approvalStatus = resultSet.getString("approvalStatus");
                     String notes = resultSet.getString("notes");
 

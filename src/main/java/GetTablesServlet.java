@@ -62,7 +62,7 @@ import com.google.gson.Gson;
 	        Set<Integer> uniqueTableIds = new HashSet<>();
 	        // Use a prepared statement with a parameterized query
 	        
-	        String query = "SELECT DISTINCT  rt.*, ro.name as roomName, r.* " +
+	        String query = "SELECT DISTINCT  rt.name as tableName, rt.id as tableId, rt.*, ro.name as roomName, r.* " +
 	                "FROM restauranttable rt " +
 	                "LEFT JOIN room ro ON rt.roomId = ro.id " +
 	                "LEFT JOIN reservation r ON rt.id = r.tableId " +
@@ -76,7 +76,7 @@ import com.google.gson.Gson;
 	                "         OR NOT EXISTS (" +
 	                "            SELECT 1 " +
 	                "            FROM reservation conflict_r " +
-	                "            WHERE conflict_r.tableId = rt.tableId " +
+	                "            WHERE conflict_r.tableId = rt.id " +
 	                "               AND conflict_r.date = ? " +
 	                "               AND (" +
 	                "                  (conflict_r.startTime >= ? AND conflict_r.startTime < ?) " +

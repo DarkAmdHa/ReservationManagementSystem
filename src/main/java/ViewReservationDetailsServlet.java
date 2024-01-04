@@ -6,17 +6,39 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 
 import com.reservationsystem.utils.Reservation;
+import com.reservationsystem.utils.User;
 
-@WebServlet("/ViewReservationDetails")
+@WebServlet("/ViewReservationDetailsServlet")
 public class ViewReservationDetailsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+
+	   	 HttpSession session = request.getSession();
+	     // Check if the user is already logged in
+	     if (session.getAttribute("user") == null) {
+	    	 //If so,redirect
+	    	 response.sendRedirect(request.getContextPath() + "/LoginServlet?notLoggedIn=true");
+	    	 return;
+	     }
+	      // Retrieve user information from the session
+         User user = (User) session.getAttribute("user");
+     
+	     
+	     // Set user information as request attributes
+	     request.setAttribute("userName", user.getName());
+	     request.setAttribute("userEmail", user.getEmail());
+	     request.setAttribute("userId", user.getId());
+	     request.setAttribute("userAvatarUrl", user.getAvatarUrl());
+     
         // Retrieve the reservation ID from the request parameters
-        String reservationIdStr = request.getParameter("reservationId");
+        String reservationIdStr = request.getParameter("id");
 
         // Check if the reservationId parameter is present
         if (reservationIdStr != null && !reservationIdStr.isEmpty()) {
@@ -25,7 +47,7 @@ public class ViewReservationDetailsServlet extends HttpServlet {
                 int reservationId = Integer.parseInt(reservationIdStr);
 
                 // Fetch the reservation details using the reservationId
-                Reservation reservation = fetchReservationDetails(reservationId);
+                Reservation reservation = Reservation.getReservationById(reservationId);
 
                 // Set the reservation details as a request attribute
                 request.setAttribute("reservation", reservation);
@@ -43,11 +65,5 @@ public class ViewReservationDetailsServlet extends HttpServlet {
         }
     }
 
-    private Reservation fetchReservationDetails(int reservationId) {
-        // Implement the logic to fetch reservation details from the database
-        // You can use your existing methods or create a new one based on your database structure
-        // Return the fetched Reservation object
-        // Example: return ReservationDAO.getReservationById(reservationId);
-        return null;
-    }
+
 }

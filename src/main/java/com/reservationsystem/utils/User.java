@@ -214,7 +214,7 @@ public class User {
     
     public List<Reservation> getUserReservations() {
         String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, "
-                + "reservation.startTime, reservation.endTime, room.roomName, restauranttable.tableName "
+                + "reservation.startTime, reservation.endTime, room.name as roomName, restauranttable.name as tableName "
                 + "FROM reservation "
                 + "JOIN restauranttable ON reservation.tableId = restauranttable.id "
                 + "JOIN room ON restauranttable.roomId = room.id "
@@ -225,14 +225,14 @@ public class User {
             Connection connection = DatabaseUtils.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, this.id);
-
+            System.out.print(this.id +"asdsadasd");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<Reservation> reservations = new ArrayList<>();
 
             while (resultSet.next()) {
                 Reservation reservation = new Reservation();
-                reservation.setId(resultSet.getInt("reservationId"));
+                reservation.setId(resultSet.getInt("id"));
                 reservation.setDate(resultSet.getDate("date"));
                 reservation.setStartTime(resultSet.getString("startTime"));
                 reservation.setEndTime(resultSet.getString("endTime"));

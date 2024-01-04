@@ -78,7 +78,7 @@
 	<script>
 	document.getElementById("editProfileForm").addEventListener("submit", function (event) {
 	    event.preventDefault();
-	    debugger;
+
 
 	    const form = event.target;
 
@@ -149,27 +149,34 @@
 	if (avatarInput.files.length > 0) {
 	  formData.append("avatar", avatarInput.files[0]);
 	}
-	    fetch("/reservation_system/EditProfileServlet", {
-	      method: "POST",
-	      body: formData
-	    })
-	      .then(response => {
-	        if (response.ok) {
-	          return response.json();
-	        } else {
-	          throw new Error("Profile update failed");
-	        }
-	      })
-	      .then(data => {
-	        // Check the response data for update result
-	        debugger;
-	        handleServerResponse(data);
-	      })
-	      .catch(error => {
-	        // Handle update failure, show a generic error message
-	        console.error("Profile update error:", error);
-	      });
-	  });
+	
+	setLoading(true);
+	
+	setTimeout(()=>{
+		fetch("/reservation_system/EditProfileServlet", {
+		      method: "POST",
+		      body: formData
+		    })
+		      .then(response => {
+		    	  setLoading(false);
+		        if (response.ok) {
+		          return response.json();
+		        } else {
+		          throw new Error("Profile update failed");
+		        }
+		      })
+		      .then(data => {
+		        // Check the response data for update result
+		        handleServerResponse(data);
+		      })
+		      .catch(error => {
+		    	  setLoading(false);
+		        // Handle update failure, show a generic error message
+		        console.error("Profile update error:", error);
+		      });
+		  });
+	}, 1000);
+	    
 
   function isPasswordFormVisible() {
     const passwordForm = document.getElementById('passwordForm');

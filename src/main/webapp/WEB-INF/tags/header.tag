@@ -24,11 +24,107 @@
     
     
     <style>
+    
+    
+body:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000b0;
+    transition: 0.5s ease;
+    opacity: 0;
+    transition: 0.5s ease;
+    pointer-events: none;
+    z-index: 99;
+}
+
+body.isLoading:after {
+    backdrop-filter: blur(4px);
+    opacity: 1;
+}
+
+body.isLoading {
+    pointer-events: none;
+}
+
+span.loader {}
+
+body > .loader {
+    transition: 0.5s ease;
+    opacity: 0;
+    position: absolute;
+    left: 49%;
+    top: 45%;
+    z-index: 9;
+    width: 110px;
+    height: 110px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+body.isLoading > .loader {
+    opacity: 1;
+}
+
+    
+    .modal {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    transition: 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;	
+ 	opacity: 0;	
+
+}
+
+.modal:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #00000091;
+   	z-index: 0;
+    backdrop-filter: blur(4px);
+}
+.modal.view{
+pointer-events: visible;
+     opacity: 1;
+}
+
+
+.modal .modalForm {
+    z-index: 9;
+    position: relative;
+    transition: 0.5s ease;
+    transform: translateY(-20px);
+    opacity: 0;
+    box-shadow: 1px 5px 20px rgb(0 0 0 / 9%);
+    min-width: 450px;
+    pointer-events: none;
+}
+
+.modal .modalForm.view {
+	pointer-events: visible;	
+    transform: translateY(0);
+    opacity: 1;
+}
+
+
     .loader {
     width: 48px;
     height: 48px;
     border: 5px solid #FFF;
-    border-bottom-color: #FF3D00;
+    border-bottom-color: rgb(34 197 94);
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;
@@ -50,6 +146,10 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+.resEditMsg {
+    width: fit-content;
+
 }
     
     .submitButton:disabled{
@@ -82,3 +182,13 @@
     class="${bodyClasses}"
     cz-shortcut-listen="true"
   >
+  <script>const setLoading = (state)=>{
+	  if(state){
+		  document.querySelector('body').classList.add('isLoading')
+	  }else{
+		  document.querySelector('body').classList.remove('isLoading')
+	  }
+  }</script>
+  
+  
+  <span class="loader"></span>
