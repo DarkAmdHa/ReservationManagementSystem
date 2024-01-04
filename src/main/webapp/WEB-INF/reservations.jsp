@@ -43,7 +43,7 @@ if (resIsEdited) { %>
                 No reservations yet. Click below to add a reservation.
             </div>
             <!-- Add Reservation Button -->
-            <a href="ReservationServlet"
+            <a href="/reservation_system/MakeReservationServlet"
                class="bg-green-500 text-white px-4 py-2 rounded-md inline-block hover:bg-green-600 transition"
             >Add Reservation</a>
         </c:when>

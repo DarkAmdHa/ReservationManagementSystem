@@ -42,7 +42,6 @@ public class LogUtils {
 
         try (Connection connection = DatabaseUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-        	System.out.println("asdasdasd" + actionType.name());
             preparedStatement.setInt(1, userId);
             preparedStatement.setTimestamp(2, getCurrentTimestamp());
             preparedStatement.setString(3, actionType.name());

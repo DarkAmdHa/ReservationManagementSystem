@@ -169,10 +169,15 @@
         const errorContainer = document.getElementById("errorContainer");
 
         switch (data.registrationResult) {
-            case "SUCCESS":
+            /*case "SUCCESS":
+            	User needs to be activated first:
                 console.log("Registration successful");
                 window.location.href = "/reservation_system/ReservationsServlet";
-                break;
+                break;*/
+            case "SUCCESS":
+            	  console.log("Registration successful");
+                  window.location.href = "/reservation_system/RegistrationThankYouServlet";
+                  break;
             case "USER_ALREADY_EXISTS":
                 console.error("User already exists");
                 displayErrorMessages(["User with this email already exists"]);

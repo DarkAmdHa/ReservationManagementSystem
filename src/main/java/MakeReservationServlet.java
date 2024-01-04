@@ -80,8 +80,8 @@ public class MakeReservationServlet extends HttpServlet {
             // Execute the query and process the results
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    int id = resultSet.getInt("tableId");
-                    String name = resultSet.getString("tableName");
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
                     String capacity = resultSet.getString("seatsCapacity");
                     Table table = new Table(id, name, capacity, roomId, "");
                     tables.add(table);
@@ -243,7 +243,7 @@ public class MakeReservationServlet extends HttpServlet {
         String endTime = request.getParameter("endTime");
         String tableId = request.getParameter("tableId");
         String notes = request.getParameter("notes");
-
+        
         // Check if the reservation ID is provided
         if (reservationId == null || reservationId.isEmpty()) {
             JsonObject jsonResponse = new JsonObject();
@@ -314,7 +314,7 @@ public class MakeReservationServlet extends HttpServlet {
     private void updateReservation(String reservationId, String tableId, String date, String startTime, String endTime, String notes) {
         // Perform a database query to update the existing reservation
         String query = "UPDATE reservation SET tableId = ?, date = ?, startTime = ?, endTime = ?, notes = ? WHERE id = ?";
-
+        
         try (Connection connection = DatabaseUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 

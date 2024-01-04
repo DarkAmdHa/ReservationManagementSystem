@@ -100,7 +100,6 @@ public class EditProfileServlet extends HttpServlet {
         	  // Get the uploaded file name
             String fileName = System.currentTimeMillis() + "_" + avatarPart.getSubmittedFileName();
 
-            System.out.println(getServletContext().getRealPath("/static"));
             String uploadDir = getServletContext().getRealPath("/static/images/avatars");
             File uploadDirFile = new File(uploadDir);
             if (!uploadDirFile.exists()) {

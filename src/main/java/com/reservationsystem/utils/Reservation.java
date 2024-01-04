@@ -102,7 +102,7 @@ public class Reservation {
     public static Reservation getReservationById(int reservationId) {
         Reservation reservation = null;
 
-        String query = "SELECT r.*, rt.name as roomName, rt.name as tableName " +
+        String query = "SELECT r.*, rm.name as roomName, rt.name as tableName " +
         		"FROM reservation r " +
         		"JOIN restauranttable rt ON r.tableId = rt.id " +
         		"JOIN room rm ON rt.roomId = rm.id " + 

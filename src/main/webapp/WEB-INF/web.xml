@@ -109,4 +109,14 @@
     <servlet-name>ViewReservationDetailsServlet</servlet-name>
     <url-pattern>/ViewReservationDetailsServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>RegistrationThankYouServlet</display-name>
+    <servlet-name>RegistrationThankYouServlet</servlet-name>
+    <servlet-class>RegistrationThankYouServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RegistrationThankYouServlet</servlet-name>
+    <url-pattern>/RegistrationThankYouServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

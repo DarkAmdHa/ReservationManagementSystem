@@ -225,7 +225,6 @@ public class User {
             Connection connection = DatabaseUtils.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, this.id);
-            System.out.print(this.id +"asdsadasd");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<Reservation> reservations = new ArrayList<>();

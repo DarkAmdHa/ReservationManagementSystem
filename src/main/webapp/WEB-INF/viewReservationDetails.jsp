@@ -39,7 +39,7 @@
           
           
             <div class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md modalForm">
-                <%@include file="makeReservationForm.jsp" %>
+                <%@include file="editReservationForm.jsp" %>
             </div>
         </div>
         
@@ -70,6 +70,18 @@
             
             document.getElementById('endTime').dispatchEvent(changeEvent);
             document.getElementById('specialRequests').dispatchEvent(changeEvent);
+            
+            const awaitRooms = setInterval(()=>{
+           		if(document.querySelector('.roomTab ')){
+           			clearInterval(awaitRooms);
+           			const changeEvent = new Event('change');
+           			document.querySelector('[id="${reservation.room}"]').checked=true;
+           			document.querySelector('[id="${reservation.room}"]').dispatchEvent(changeEvent);
+           			
+           			document.querySelector('[id="${reservation.tableName}"]').checked=true;
+           			document.querySelector('[id="${reservation.tableName}"]').dispatchEvent(changeEvent);
+           		}
+            }, 500);
         }
 
         function closeEditModal() {

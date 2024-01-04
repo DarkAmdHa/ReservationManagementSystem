@@ -37,7 +37,7 @@ public class RegisterServlet extends HttpServlet {
          String email = request.getParameter("email");
          String password = request.getParameter("password");
 
-         System.out.println("Hello " + name + email + password);
+
         // Validate the inputs
          if (isValidInput(name, email, password)) {
         	 // Check additional server-side validations
@@ -60,7 +60,7 @@ public class RegisterServlet extends HttpServlet {
 
                      response.setContentType("application/json");
                      response.getWriter().write(successResponse.toString());
-                     break;
+                     break;                	 
                  case USER_ALREADY_EXISTS:
                      // Registration failed, user already exists
                      JsonObject userExistsResponse = new JsonObject();
