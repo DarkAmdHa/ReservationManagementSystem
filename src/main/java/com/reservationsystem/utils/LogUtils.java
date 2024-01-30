@@ -36,16 +36,21 @@ public class LogUtils {
     public static void logProfileUpdate(User user) {
         log(user.getId(), ActionType.UPDATED_PROFILE);
     }
-
+    
     private static void log(int userId, ActionType actionType) {
-        String query = "INSERT INTO log (userId, actionTime, actionDescription) VALUES (?, ?, ?)";
+        log(userId, actionType, "");
+    }
+
+    private static void log(int userId, ActionType actionType,String detail) {
+        String query = "INSERT INTO log (userId, actionTime, actionDescription, actionComment) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = DatabaseUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setTimestamp(2, getCurrentTimestamp());
             preparedStatement.setString(3, actionType.name());
-
+            preparedStatement.setString(4, detail);
+            
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,6 +61,22 @@ public class LogUtils {
     private static Timestamp getCurrentTimestamp() {
         return new Timestamp(System.currentTimeMillis());
     }
+    
+    public static void logRoleUpdate(User user, String detail) {
+        log(user.getId(), ActionType.UPDATED_ROLE,detail);
+    }
+
+    public static void logActivationStatusUpdate(User user, String detail) {
+        log(user.getId(), ActionType.UPDATED_ACTIVATION_STATUS, detail);
+    }
+
+    public static void logReservationAcceptance(User user, String detail) {
+        log(user.getId(), ActionType.ACCEPTED_RESERVATION, detail);
+    }
+
+    public static void logReservationRejection(User user, String detail) {
+        log(user.getId(), ActionType.REJECTED_RESERVATION, detail);
+    }
 
     private enum ActionType {
         LOGGED_IN,
@@ -63,8 +84,14 @@ public class LogUtils {
         MADE_RESERVATION,
         EDITED_RESERVATION,
         DELETED_RESERVATION,
-        UPDATED_PROFILE
+        UPDATED_PROFILE,
+        UPDATED_ROLE,
+        UPDATED_ACTIVATION_STATUS,
+        ACCEPTED_RESERVATION,
+        REJECTED_RESERVATION
     }
+
+   
 
     public static List<ActivityLog> getUserActivityLog(int userId) {
         List<ActivityLog> activityLogList = new ArrayList<>();
@@ -84,6 +111,36 @@ public class LogUtils {
                     ActivityLog activityLog = new ActivityLog(date, action);
                     activityLogList.add(activityLog);
                 }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+        }
+
+        return activityLogList;
+    }
+    
+    
+    public static List<ActivityLog> getAllActivityLogs() {
+        List<ActivityLog> activityLogList = new ArrayList<>();
+
+        String query = "SELECT actionTime, actionDescription, actionComment, user.email as email, user.name as name, user.avatarUrl as avatarUrl, user.role as role FROM log LEFT JOIN user ON log.userId = user.id ORDER BY actionTime DESC";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Timestamp date = resultSet.getTimestamp("actionTime");
+                String action = resultSet.getString("actionDescription");
+                String actionComment = resultSet.getString("actionComment");
+                String email = resultSet.getString("email");
+                String avatarUrl = resultSet.getString("avatarUrl");
+                String role = resultSet.getString("role");
+                String name = resultSet.getString("name");
+                
+                ActivityLog activityLog = new ActivityLog(date, action,email,avatarUrl,role, name,actionComment);
+                activityLogList.add(activityLog);
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -3,32 +3,82 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<%@ page import="java.util.Date" %>
+<%@ page import="java.sql.Time" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.LocalTime" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.reservationsystem.utils.Reservation" %>
+
+
 <h:header title="Reservations" bodyClasses="font-sans bg-gray-100 flex min-h-screen" />
 
 <h:sidebar from='N/A' />
 
+
+<%
+    Reservation reservation = (Reservation) request.getAttribute("reservation");
+	String bgColorClass = "bg-gray-500 text-white";
+	String approvalStatus = "UNDEFINED";
+    if (reservation != null) {
+        
+
+
+
+       
+            approvalStatus = reservation.getApprovalStatus();
+
+
+        // Map to store the corresponding background color classes
+        Map<String, String> statusClasses = new HashMap<>();
+        statusClasses.put("PENDING", "bg-gray-500 text-white");
+        statusClasses.put("DISAPPROVED", "bg-red-500 text-white");
+        statusClasses.put("APPROVED", " bg-green-500 text-white");
+
+        
+        if (statusClasses.get(approvalStatus) != null) {
+        	// Get the background color class based on the approval status
+           	bgColorClass = statusClasses.get(approvalStatus);
+        }
+    }
+%>
+
+
+
 <main class="flex-1 p-10">
 
-    <div class="max-w-md mx-auto my-8 bg-white rounded-md shadow-md p-6">
+    <div class="max-w-md mx-auto my-8 bg-white rounded-md shadow-md ">
 
-        <h2 class="text-2xl font-semibold mb-4">Reservation Details</h2>
+        
 
-        <div class="mb-4">
-            <p class="text-gray-500">Reservation ID: <span class="text-gray-800 font-semibold">${reservation.id}</span></p>
-            <p class="text-gray-500">Date: <span class="text-gray-800 font-semibold">${reservation.date}</span></p>
-            <p class="text-gray-500">Time: <span class="text-gray-800 font-semibold">${reservation.startTime} - ${reservation.endTime}</span></p>
-            <p class="text-gray-500">Table: <span class="text-gray-800 font-semibold">${reservation.tableName}</span></p>
-            <p class="text-gray-500">Room: <span class="text-gray-800 font-semibold">${reservation.room}</span></p>
-            <p class="text-gray-500">Status: <span class="text-gray-800 font-semibold">${reservation.approvalStatus}</span></p>
-            <p class="text-gray-500">Notes: <span class="text-gray-800 font-semibold">${reservation.notes}</span></p>
+        <h2 class="text-2xl font-semibold px-6 pt-6 pb-3 border-b border-gray-200">Reservation Details</h2><div class="mb-4 px-6 pb-6 pt-3">
+            <p class="text-gray-500 mb-2">Reservation ID: <span class="text-gray-800 font-semibold block">${reservation.id}</span></p>
+            <p class="text-gray-500 mb-2">Date: <span class="text-gray-800 font-semibold block">${reservation.date}</span></p>
+            <p class="text-gray-500 mb-2">Time: <span class="text-gray-800 font-semibold block">${reservation.startTime} - ${reservation.endTime}</span></p>
+            <div class="border-t border-b border-gray-200 py-4 flex gap-10">
+
+    <p class="text-gray-500">Room &amp; Table: <span class="text-gray-800 font-semibold block">${reservation.room} - ${reservation.tableName}</span></p>
+<p class="text-gray-500">
+    Status: <span class="font-semibold block <%= bgColorClass %> px-2 rounded"><%= approvalStatus %></span>
+</p>
+</div>
+
+
+            
+            
+            <p class="text-gray-500 pt-2">Notes: <span class="text-gray-800 font-semibold block">${reservation.notes}</span></p>
+            
+            <div class="flex justify-between pt-4">
+            <a href="#" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-blue-600 transition" onclick="openEditModal()">Edit</a>
+            <a href="#" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition" onclick="deleteReservation()">Delete</a>
+        </div>
         </div>
 
         <!-- Buttons -->
-        <div class="flex justify-between">
-            <a href="#" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" onclick="openEditModal()">Edit</a>
-            <a href="#" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition" onclick="deleteReservation()">Delete</a>
-        </div>
-		<div class='submissionError'></div>
+        
+		<div class="submissionError"></div>
     </div>
 
 
@@ -66,7 +116,7 @@
             
             document.querySelector('#endTime').value = endTimeFromServer.slice(0, 5);
             
-            document.querySelector('#specialRequests').value = '${reservation.notes}';
+            document.querySelector('#specialRequests').value = "${reservation.notes}";
             
             document.getElementById('endTime').dispatchEvent(changeEvent);
             document.getElementById('specialRequests').dispatchEvent(changeEvent);

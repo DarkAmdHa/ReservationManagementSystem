@@ -56,6 +56,7 @@ public class LoginServlet extends HttpServlet {
                     case SUCCESS:
                         // Set a session attribute to indicate the user is logged in
                         User loggedInUser = User.getUserByEmail(email);
+                        
                         session.setAttribute("user", loggedInUser);
                         
                         // Log user login
@@ -63,6 +64,12 @@ public class LoginServlet extends HttpServlet {
                         
                         JsonObject successResponse = new JsonObject();
                         successResponse.addProperty("loginResult", "SUCCESS");
+                        if(!loggedInUser.getRole().equals("NORMAL")) {
+                        	successResponse.addProperty("redirectTo", "/reservation_system/AdminDashboard");
+                        }else {
+                        	successResponse.addProperty("redirectTo", "/reservation_system/ReservationsServlet");
+                        }
+                        
                         successResponse.addProperty("message", "Login successful");
 
                         response.setContentType("application/json");

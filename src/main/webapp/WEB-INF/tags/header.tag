@@ -175,6 +175,52 @@ pointer-events: visible;
         transform: rotate(360deg);
     }
     } 
+    
+     .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 18px;
+    background-color: #ccc;
+    border-radius: 34px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 13px;
+    height: 13px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+/* When checked, change background color and move the slider */
+.statusToggle:checked + .toggle-switch .toggle-slider,
+.roleToggle:checked + .toggle-switch .toggle-slider {
+    transform: translateX(14px);
+    background-color: #10b981;
+}
+
+.
+
+.toggle-switch.disapproved .toggle-slider {
+    background-color: #ef4444;
+}
+
+.toggle-switch {
+    background-color: #dadada; /* Red when not checked */
+    margin-top: 5px;
+}
+
+p.status {
+    width: 90px;
+    font-size: 13px;
+}
+    
     </style>
   </head>
 

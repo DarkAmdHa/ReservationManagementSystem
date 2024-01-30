@@ -4,7 +4,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
 uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <h:header
-  title="Make a Reservation"
+  title="All Users Activity Log"
   bodyClasses="font-sans bg-gray-100 flex min-h-screen"
 />
 
@@ -43,7 +43,34 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
   
 <c:if test="${totalPages > 1}">
     <div class="pagination flex items-center justify-center gap-2 pt-4">
-        <c:forEach begin="1" end="${totalPages}" var="page">
+        <!-- Display the first two pages -->
+        <c:forEach begin="1" end="${totalPages < 3 ? totalPages : 2}" var="page">
+            <a href="${pageContext.request.contextPath}/ActivityLogServlet?page=${page}"
+               class="px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:bg-gray-300 ${currentPage == page ? 'bg-green-500 text-white pointer-events-none' : ''}">
+                ${page}
+            </a>
+        </c:forEach>
+
+        <!-- Ellipsis for skipping some pages -->
+        <c:if test="${totalPages > 7 && currentPage > 4}">
+            <span>...</span>
+        </c:if>
+
+        <!-- Display range around current page -->
+        <c:forEach begin="${currentPage - 2 < 3 ? 3 : currentPage - 2}" end="${currentPage + 2 > totalPages - 2 ? totalPages - 2 : currentPage + 2}" var="page">
+            <a href="${pageContext.request.contextPath}/ActivityLogServlet?page=${page}"
+               class="px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:bg-gray-300 ${currentPage == page ? 'bg-green-500 text-white pointer-events-none' : ''}">
+                ${page}
+            </a>
+        </c:forEach>
+
+        <!-- Another ellipsis if needed -->
+        <c:if test="${totalPages > 7 && currentPage < totalPages - 3}">
+            <span>...</span>
+        </c:if>
+
+        <!-- Display the last two pages -->
+        <c:forEach begin="${totalPages - 1}" end="${totalPages}" var="page">
             <a href="${pageContext.request.contextPath}/ActivityLogServlet?page=${page}"
                class="px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:bg-gray-300 ${currentPage == page ? 'bg-green-500 text-white pointer-events-none' : ''}">
                 ${page}
@@ -51,6 +78,7 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
         </c:forEach>
     </div>
 </c:if>
+
 
 
 

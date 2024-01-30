@@ -109,11 +109,10 @@ document.getElementById("loginForm").addEventListener("submit", function (event)
 
 function handleServerResponse(data) {
     const errorContainer = document.getElementById("errorContainer");
-
     switch (data.loginResult) {
         case "SUCCESS":
             console.log("Login successful");
-            window.location.href = "/reservation_system/ReservationsServlet";
+            window.location.href = data.redirectTo;
             break;
         case "INVALID_CREDENTIALS":
             console.error(data.message);

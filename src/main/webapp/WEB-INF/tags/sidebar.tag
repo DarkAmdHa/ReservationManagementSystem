@@ -26,7 +26,7 @@
           height="80px"
           class="m-auto rounded-full overflow-hidden"
         />
-        <a href="ProfileEditServlet">
+        <a href="EditProfileServlet">
           <p class="text-center mt-2 text-gray-500">Hi ${userName}</p>
         </a>
         

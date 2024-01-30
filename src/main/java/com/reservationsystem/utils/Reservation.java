@@ -15,6 +15,8 @@ public class Reservation {
     private String room;
     private String approvalStatus;
     private String notes;
+    private String userName;
+    private String avatarUrl;
 
     // Constructors
     public Reservation() {
@@ -31,6 +33,7 @@ public class Reservation {
         this.approvalStatus = approvalStatus;
         this.notes = notes;
     }
+
 
     // Getters and setters
 
@@ -96,6 +99,22 @@ public class Reservation {
 
     public String getNotes() {
         return notes;
+    }
+    
+    public String getUserName() {
+return userName;
+    }
+    
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    
+    public String getAvatarUrl() {
+return avatarUrl;
+    }
+    
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
     
  // Fetch reservation details by ID

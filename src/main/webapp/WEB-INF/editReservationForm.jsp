@@ -64,6 +64,7 @@
     ></textarea>
   </div>
   <ul class="submissionErrors text-sm text-red-500"></ul>
+  
   <div class="flex items-center justify-between">
     <button
       type="submit"
@@ -449,7 +450,7 @@
     } else {
       li.classList.add("text-green-500");
     }
-    document.querySelector(".submissionError").appendChild(li);
+    document.querySelector(".submissionErrors").appendChild(li);
     setTimeout(() => {
       li.remove();
     }, 2000);

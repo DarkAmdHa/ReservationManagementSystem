@@ -15,11 +15,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/EditProfileServlet")
+@WebServlet("/EditProfileAdminServlet")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2 MB
                  maxFileSize = 1024 * 1024 * 10,       // 10 MB
                  maxRequestSize = 1024 * 1024 * 50)    // 50 MB
-public class EditProfileServlet extends HttpServlet {
+public class EditProfileAdminServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,7 +40,7 @@ public class EditProfileServlet extends HttpServlet {
         request.setAttribute("userAvatarUrl", user.getAvatarUrl());
 
         // Forward to the editProfile.jsp page
-        request.getRequestDispatcher("/WEB-INF/editProfile.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/editProfileAdmin.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

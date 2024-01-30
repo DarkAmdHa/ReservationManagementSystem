@@ -14,7 +14,13 @@ public class User {
     private String password;
     private String role;
     private Boolean isActive;
+    private Boolean isDeactivated;
     private String avatarUrl;
+    
+    // Constructors
+    public User() {
+        // Default constructor
+    }
 
     // Constructor without isActive and id (optional)
     public User(String name, String email, String password, String role) {
@@ -70,6 +76,10 @@ public class User {
         updateFieldInDatabase("email", email);
 
     }
+    
+    public void setEmailNormal(String email) {
+        this.email = email;
+    }
 
     public String getPassword() {
         return password;
@@ -89,6 +99,23 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+    
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(int isActive) {
+        this.isActive = isActive == 1;
+    }
+    
+    public boolean getIsDeactivated() {
+        return isDeactivated;
+    }
+    
+    public void setIsDeactivated(int isDeactivated) {
+        this.isDeactivated = isDeactivated == 1;
+    }
+    
     
     public String getAvatarUrl() {
         return avatarUrl;
@@ -186,6 +213,30 @@ public class User {
         }
     }
     
+    public static String getUserRole(String email) {
+    	String query = "SELECT role FROM reservations.user WHERE email=?";
+    	
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, email);
+            
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                // User found, create a User object and return
+                return resultSet.getString("role");
+            } else {
+                // User not found
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, log error, etc.
+            return null;
+        }
+    }
+    
  // Method to authenticate a user during login
     public static LoginResult loginUser(String email, String password) {
         User user = getUserByEmail(email);
@@ -238,6 +289,86 @@ public class User {
                 reservation.setTableName(resultSet.getString("tableName"));
                 reservation.setRoom(resultSet.getString("roomName"));
                 reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+
+                reservations.add(reservation);
+            }
+
+            return reservations;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, log error, etc.
+            return null;
+        }
+    }
+    
+    public List<Reservation> getPendingUserReservations() {
+        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, "
+                + "reservation.startTime, reservation.endTime, room.name as roomName, restauranttable.name as tableName, user.name as userName, user.avatarUrl as avatarUrl "
+                + "FROM reservation "
+                + "JOIN user ON reservation.userId = user.id "
+                + "JOIN restauranttable ON reservation.tableId = restauranttable.id "
+                + "JOIN room ON restauranttable.roomId = room.id "
+                + "WHERE reservation.approvalStatus = \"PENDING\" "
+                + "ORDER BY reservation.date ASC, reservation.startTime ASC;";
+
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Reservation> reservations = new ArrayList<>();
+
+            while (resultSet.next()) {
+                Reservation reservation = new Reservation();
+                reservation.setId(resultSet.getInt("id"));
+                reservation.setDate(resultSet.getDate("date"));
+                reservation.setStartTime(resultSet.getString("startTime"));
+                reservation.setEndTime(resultSet.getString("endTime"));
+                reservation.setTableName(resultSet.getString("tableName"));
+                reservation.setRoom(resultSet.getString("roomName"));
+                reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+                reservation.setUserName(resultSet.getString("userName"));
+                reservation.setAvatarUrl(resultSet.getString("avatarUrl"));
+
+                reservations.add(reservation);
+            }
+
+            return reservations;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, log error, etc.
+            return null;
+        }
+    }
+    
+    
+    public List<Reservation> getAllUserReservations() {
+        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, "
+                + "reservation.startTime, reservation.endTime, room.name as roomName, restauranttable.name as tableName, user.name as userName, user.avatarUrl as avatarUrl "
+                + "FROM reservation "
+                + "JOIN user ON reservation.userId = user.id "
+                + "JOIN restauranttable ON reservation.tableId = restauranttable.id "
+                + "JOIN room ON restauranttable.roomId = room.id "
+                + "ORDER BY reservation.date ASC, reservation.startTime ASC;";
+
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Reservation> reservations = new ArrayList<>();
+
+            while (resultSet.next()) {
+                Reservation reservation = new Reservation();
+                reservation.setId(resultSet.getInt("id"));
+                reservation.setDate(resultSet.getDate("date"));
+                reservation.setStartTime(resultSet.getString("startTime"));
+                reservation.setEndTime(resultSet.getString("endTime"));
+                reservation.setTableName(resultSet.getString("tableName"));
+                reservation.setRoom(resultSet.getString("roomName"));
+                reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+                reservation.setUserName(resultSet.getString("userName"));
+                reservation.setAvatarUrl(resultSet.getString("avatarUrl"));
 
                 reservations.add(reservation);
             }

@@ -15,16 +15,16 @@ import com.reservationsystem.utils.Reservation;
 import com.reservationsystem.utils.User;
 
 /**
- * Servlet implementation class ReservationsServlet
+ * Servlet implementation class AdminDashboard
  */
-public class ReservationsServlet extends HttpServlet {
+public class AdminDashboard extends HttpServlet {
 	int PAGE_SIZE = 6;
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ReservationsServlet() {
+    public AdminDashboard() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -46,18 +46,17 @@ public class ReservationsServlet extends HttpServlet {
          
       // Retrieve user information from the session
          User user = (User) session.getAttribute("user");
-         System.out.println(user.getId() + user.getRole());
          int userId = user.getId();
          
          String userRole =  user.getRole();
-     	
-         if (!userRole.equals("NORMAL")) {
-        	 response.sendRedirect(request.getContextPath() + "/AdminDashboard" );
+         
+         if (userRole.equals("NORMAL")) {
+        	 response.sendRedirect(request.getContextPath() + "/ReservationsServlet");
         	 return;
          }
          
          // Retrieve reservations for the user
-         List<Reservation> userReservations = user.getUserReservations();
+         List<Reservation> userReservations = user.getAllUserReservations();
          
          // Pagination logic
          String pageStr = request.getParameter("page");
@@ -66,23 +65,23 @@ public class ReservationsServlet extends HttpServlet {
          int endIndex = Math.min(startIndex + PAGE_SIZE, userReservations.size());
          
       // Extract the sublist for the current page
-         List<Reservation> currentReservations = userReservations.subList(startIndex, endIndex);
+         List<Reservation> allReservations = userReservations.subList(startIndex, endIndex);
 
          // Set user information as request attributes
          request.setAttribute("userName", user.getName());
          request.setAttribute("userEmail", user.getEmail());
+         request.setAttribute("userRole", user.getRole());
          request.setAttribute("userId", userId);
          request.setAttribute("userAvatarUrl", user.getAvatarUrl());
-         request.setAttribute("userReservations", currentReservations);
+         request.setAttribute("allReservations", allReservations);
          
       // Pagination information
          request.setAttribute("currentPage", currentPage);
          request.setAttribute("totalPages", (int) Math.ceil((double) userReservations.size() / PAGE_SIZE));
 
-         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/reservations.jsp");
+         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/reservationsAdmin.jsp");
          dispatcher.forward(request, response);
 	}
-
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
