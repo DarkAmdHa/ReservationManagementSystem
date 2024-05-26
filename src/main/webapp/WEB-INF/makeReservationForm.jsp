@@ -1,5 +1,4 @@
 
-  <!-- Your reservation form goes here -->
   <form
     action="ReservationServlet"
     method="post"
@@ -429,7 +428,6 @@
               	  window.location.href='${pageContext.request.contextPath}/ReservationsServlet?reservationEdited=true';
                 }else if(data.status === 'USER_SESSION_EXPIRED'){
               	  window.location.href='${pageContext.request.contextPath}/LoginServlet?notLoggedIn=true';
-              	  
                 }else{
               	  pushError(data.message);
                 }

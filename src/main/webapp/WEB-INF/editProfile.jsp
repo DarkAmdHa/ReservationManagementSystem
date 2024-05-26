@@ -1,22 +1,27 @@
-	<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-	<%@ taglib tagdir="/WEB-INF/tags" prefix="h" %>
-	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-	
-	<h:header title="Edit Profile" bodyClasses="font-sans bg-gray-100 flex min-h-screen"/>
-	
-	<h:sidebar from='EditProfileServlet'/>
-	
-	<main class="flex-1 p-10">
-	  <h2 class="text-xl font-semibold mb-4">Edit Profile</h2>
-	
-	  <form id="editProfileForm" action="EditProfileServlet" method="post" enctype="multipart/form-data" class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md">
-	    <!-- Avatar Upload -->
-	    <div class="mb-4">
-	      <label for="avatar" class="block text-gray-700 font-bold mb-2">Avatar:</label>
-	      <div id="avatarContainer" class='relative flex flex-col align-center'>
-	                <img
-	     <c:choose>
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="h"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<h:header title="Edit Profile"
+	bodyClasses="font-sans bg-gray-100 flex min-h-screen" />
+
+<h:sidebar from='EditProfileServlet' />
+
+<main class="flex-1 p-10">
+	<h2 class="text-xl font-semibold mb-4">Edit Profile</h2>
+
+	<form id="editProfileForm" action="EditProfileServlet" method="post"
+		enctype="multipart/form-data"
+		class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md">
+		<!-- Avatar Upload -->
+		<div class="mb-4">
+			<label for="avatar" class="block text-gray-700 font-bold mb-2">Avatar:</label>
+			<div id="avatarContainer" class='relative flex flex-col align-center'>
+				<img
+					<c:choose>
 	            <c:when test="${not empty userAvatarUrl}">
 	                src="${pageContext.request.contextPath}/static/images/avatars/${userAvatarUrl}"
 	            </c:when>
@@ -24,58 +29,71 @@
 	                src="${pageContext.request.contextPath}/static/images/avatar.jpg"
 	            </c:otherwise>
 	        </c:choose>
-	
-	          width="150px"
-	          height="80px"
-	          class="m-auto rounded-full overflow-hidden"
-	        />
-	        <input type="file" name="avatar" accept="image/*" class="hidden" id="avatarInput">
-	        <label for="avatarInput" class="m-auto cursor-pointer text-green-500 hover:underline">Change Avatar</label>
-	      </div>
-	    </div>
-	
-	    <!-- Name Update -->
-	    <div class="mb-4">
-	      <label for="name" class="block text-gray-700 font-bold mb-2">Name:</label>
-	      <input type="text" name="name" value="${userName}" class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
-	    </div>
-	
-	    <!-- Email Update -->
-	    <div class="mb-4">
-	<div class="mb-4">
-	  <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
-	  <div id="emailContainer" class='flex justify-center items-center'>
-	    <input type="text" name="email" value="${userEmail}" class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" disabled>
-	    <a href="#" onclick="toggleEmailField(); return false;" id="emailToggleLink" class="text-green-500 ml-2 hover:underline">Change</a>
-	  </div>
-	</div>
-	
-	
-	    <!-- Password Update -->
-	    <div class="mb-4">
-	      
-	      <div id="passwordForm" class=' overflow-hidden' style="display:none; transition: 0.3s ease;">
-	        <label for="currentPassword" class="block text-gray-700 font-bold mb-2">Current Password:</label>
-	        <input type="password" name="currentPassword" class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
-	        
-	        <label for="newPassword" class="block text-gray-700 font-bold mb-2">New Password:</label>
-	        <input type="password" name="newPassword" class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
-	        
-	        <label for="confirmPassword" class="block text-gray-700 font-bold mb-2">Confirm Password:</label>
-	        <input type="password" name="confirmPassword" class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
-	      </div>
-	      <a href="#" onclick="showPasswordForm(); return false;" class="text-green-500 block font-bold mb-2 password-link">Change Password</a>
-	    </div>
-	
-	    <!-- Error Container -->
-	    <div id="errorContainer" class="text-red-500 mb-4"></div>
-	
-	    <!-- Submit Button -->
-	    <button type="submit" class="bg-green-500 transition text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none submitButton" disabled>Update Profile</button>
-	  </form>
-	</main>
-	
-	<script>
+					width="150px" height="80px"
+					class="m-auto rounded-full overflow-hidden" /> <input
+					type="file" name="avatar" accept="image/*" class="hidden"
+					id="avatarInput"> <label for="avatarInput"
+					class="m-auto cursor-pointer text-green-500 hover:underline">Change
+					Avatar</label>
+			</div>
+		</div>
+
+		<!-- Name Update -->
+		<div class="mb-4">
+			<label for="name" class="block text-gray-700 font-bold mb-2">Name:</label>
+			<input type="text" name="name" value="${userName}"
+				class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+		</div>
+
+		<!-- Email Update -->
+		<div class="mb-4">
+			<div class="mb-4">
+				<label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
+				<div id="emailContainer" class='flex justify-center items-center'>
+					<input type="text" name="email" value="${userEmail}"
+						class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+						disabled> <a href="#"
+						onclick="toggleEmailField(); return false;" id="emailToggleLink"
+						class="text-green-500 ml-2 hover:underline">Change</a>
+				</div>
+			</div>
+
+
+			<!-- Password Update -->
+			<div class="mb-4">
+
+				<div id="passwordForm" class=' overflow-hidden'
+					style="display: none; transition: 0.3s ease;">
+					<label for="currentPassword"
+						class="block text-gray-700 font-bold mb-2">Current
+						Password:</label> <input type="password" name="currentPassword"
+						class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+
+					<label for="newPassword" class="block text-gray-700 font-bold mb-2">New
+						Password:</label> <input type="password" name="newPassword"
+						class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+
+					<label for="confirmPassword"
+						class="block text-gray-700 font-bold mb-2">Confirm
+						Password:</label> <input type="password" name="confirmPassword"
+						class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+				</div>
+				<a href="#" onclick="showPasswordForm(); return false;"
+					class="text-green-500 block font-bold mb-2 password-link">Change
+					Password</a>
+			</div>
+
+			<!-- Error Container -->
+			<div id="errorContainer" class="text-red-500 mb-4"></div>
+
+			<!-- Submit Button -->
+			<button type="submit"
+				class="bg-green-500 transition text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none submitButton"
+				disabled>Update Profile</button>
+	</form>
+</main>
+
+<script>
 	document.getElementById("editProfileForm").addEventListener("submit", function (event) {
 	    event.preventDefault();
 
@@ -326,5 +344,5 @@
     });
   });
 </script>
-	
-	<h:footer/>
+
+<h:footer />

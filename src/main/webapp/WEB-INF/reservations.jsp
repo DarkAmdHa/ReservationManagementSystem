@@ -18,8 +18,12 @@
      <%
     String resEditedParam = request.getParameter("reservationEdited");
      String resDeletedParam = request.getParameter("reservationDeleted");
+     String resIsCancelledParam = request.getParameter("reservationCancelled");
     boolean resIsEdited = resEditedParam != null && resEditedParam.equals("true");
     boolean resIsDeleted = resDeletedParam != null && resDeletedParam.equals("true");
+    boolean resIsCancelled = resIsCancelledParam != null && resIsCancelledParam.equals("true");
+
+    
 if (resIsEdited) { %>
         <div class='bg-green-100 p-2 text-xs mt-2 rounded-lg fadeUp text-center resEditMsg px-32 mb-2'>Reservation Updated.</div>
         <script>
@@ -32,6 +36,14 @@ if (resIsEdited) { %>
         <script>
             setTimeout(() => {
                 document.querySelector('.resEditMsg').remove();
+            }, 2500);
+        </script>
+    
+         <% }else if(resIsCancelled){ %>
+    <div class='bg-red-100 p-2 text-xs mt-2 rounded-lg fadeUp text-center resCancelMsg px-32 mb-2'>Reservation Cancelled.</div>
+        <script>
+            setTimeout(() => {
+                document.querySelector('.resCancelMsg').remove();
             }, 2500);
         </script>
     
@@ -64,21 +76,36 @@ if (resIsEdited) { %>
 
         <div class="flex items-center text-sm pb-3 gap-4">
             <div class="border-r border-gray-300 pr-4">
-                <p class="font-bold">${reservation.room}</p>
+                <p class="font-bold">${reservation.roomName}</p>
                 <p class="">${reservation.tableName}</p>
             </div>
             <p class="pr-4">${reservation.date}</p>
             <p class="pr-4">${reservation.startTime} - ${reservation.endTime}</p>
         </div>
-        <p class="">Status: 
+        <c:if test="${reservation.status eq 'Reserved'}">
+	        <p class="">Approval Status: 
+	            <span class="<c:choose>
+	                            <c:when test='${reservation.date.time lt System.currentTimeMillis()}'>text-gray-500 font-semibold">Passed</c:when>
+	                            <c:when test='${reservation.approvalStatus eq "APPROVED"}'>text-green-500 font-semibold">Approved</c:when>
+	                            <c:when test='${reservation.approvalStatus eq "DISAPPROVED"}'>text-red-500 font-semibold">Rejected</c:when>
+	                            <c:when test='${reservation.approvalStatus eq "PENDING"}'>text-gray-500 font-semibold">Pending</c:when>
+	                       </c:choose>
+	            </span>
+	        </p>
+        </c:if>
+
+        
+        <p class="">Reservation Status: 
             <span class="<c:choose>
-                            <c:when test='${reservation.date.time lt System.currentTimeMillis()}'>text-gray-500 font-semibold">Passed</c:when>
-                            <c:when test='${reservation.approvalStatus eq "APPROVED"}'>text-green-500 font-semibold">Approved</c:when>
-                            <c:when test='${reservation.approvalStatus eq "DISAPPROVED"}'>text-red-500 font-semibold">Rejected</c:when>
-                            <c:when test='${reservation.approvalStatus eq "PENDING"}'>text-gray-500 font-semibold">Pending</c:when>
+                            <c:when test='${reservation.status eq "Cancelled"}'>text-red-500 font-semibold">Cancelled</c:when>
+                            <c:when test='${reservation.status eq "Reserved"}'>text-gray-500 font-semibold">Reserved</c:when>
+                            <c:when test='${reservation.status eq "Attended"}'>>text-green-500 font-semibold">Attended</c:when>
+                            <c:when test='${reservation.status eq "Missed"}'>>text-green-500 font-semibold">Missed</c:when>
                        </c:choose>
             </span>
         </p>
+        
+        
         <a href="${pageContext.request.contextPath}/ViewReservationDetailsServlet?id=${reservation.id}" class="underline text-green-500">View Details</a>
     </div>
 </c:forEach>

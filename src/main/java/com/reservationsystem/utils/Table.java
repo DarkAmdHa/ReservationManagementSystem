@@ -15,6 +15,12 @@ public class Table {
         this.roomName = roomName;
     }
     
+    public Table(int id, String name, String capacity) {
+        this.id = id;
+        this.name = name;
+        this.capacity = capacity;
+    }
+    
     // Getter for id
     public int getId() {
         return id;

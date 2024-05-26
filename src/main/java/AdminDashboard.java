@@ -55,8 +55,18 @@ public class AdminDashboard extends HttpServlet {
         	 return;
          }
          
+         String searchBy = request.getParameter("searchBy");
+         String searchTerm = request.getParameter("searchTerm");
+         
+         
          // Retrieve reservations for the user
-         List<Reservation> userReservations = user.getAllUserReservations();
+         List<Reservation> userReservations;
+         if (searchBy != null && searchTerm != null) {
+        	 userReservations = user.searchReservations(searchBy, searchTerm);
+         } else {
+        	 userReservations = user.getAllUserReservations();
+         }
+         
          
          // Pagination logic
          String pageStr = request.getParameter("page");
@@ -73,12 +83,16 @@ public class AdminDashboard extends HttpServlet {
          request.setAttribute("userRole", user.getRole());
          request.setAttribute("userId", userId);
          request.setAttribute("userAvatarUrl", user.getAvatarUrl());
-         request.setAttribute("allReservations", allReservations);
+         request.setAttribute("allReservations", userReservations);
          
       // Pagination information
          request.setAttribute("currentPage", currentPage);
-         request.setAttribute("totalPages", (int) Math.ceil((double) userReservations.size() / PAGE_SIZE));
+         //request.setAttribute("totalPages", (int) Math.ceil((double) userReservations.size() / PAGE_SIZE));
 
+         request.setAttribute("searchBy", searchBy);
+         request.setAttribute("searchTerm", searchTerm);
+         
+         
          RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/reservationsAdmin.jsp");
          dispatcher.forward(request, response);
 	}

@@ -28,6 +28,11 @@ public class LogUtils {
     public static void logReservationEdit(User user) {
         log(user.getId(), ActionType.EDITED_RESERVATION);
     }
+    
+    public static void logReservationCancellation(User user) {
+        log(user.getId(), ActionType.CANCELLED_RESERVATION);
+    }
+    
 
     public static void logReservationDeletion(User user) {
         log(user.getId(), ActionType.DELETED_RESERVATION);
@@ -35,6 +40,35 @@ public class LogUtils {
 
     public static void logProfileUpdate(User user) {
         log(user.getId(), ActionType.UPDATED_PROFILE);
+    }
+    
+    public static void logTableCreated(User user, String detail) {
+        log(user.getId(), ActionType.CREATED_TABLE,detail);
+    }
+    
+    public static void logTableUpdated(User user, String detail) {
+        log(user.getId(), ActionType.UPDATED_TABLE, detail);
+    }
+    
+    public static void logTableDeletion(User user, String detail) {
+        log(user.getId(), ActionType.DELETED_TABLE, detail);
+    }
+    
+    public static void logRoomCreated(User user, String detail) {
+        log(user.getId(), ActionType.CREATED_ROOM,detail);
+    }
+    
+    public static void logRoomUpdated(User user, String detail) {
+        log(user.getId(), ActionType.UPDATED_ROOM, detail);
+    }
+    
+    public static void logRoomDeletion(User user, String detail) {
+        log(user.getId(), ActionType.DELETED_ROOM, detail);
+    }
+    
+    
+    public static void Room(User user) {
+        log(user.getId(), ActionType.UPDATED_ROOM);
     }
     
     private static void log(int userId, ActionType actionType) {
@@ -83,12 +117,19 @@ public class LogUtils {
         LOGGED_OUT,
         MADE_RESERVATION,
         EDITED_RESERVATION,
+        CANCELLED_RESERVATION,
         DELETED_RESERVATION,
         UPDATED_PROFILE,
         UPDATED_ROLE,
         UPDATED_ACTIVATION_STATUS,
         ACCEPTED_RESERVATION,
-        REJECTED_RESERVATION
+        REJECTED_RESERVATION,
+        CREATED_TABLE,
+        UPDATED_TABLE,
+        DELETED_TABLE,
+        CREATED_ROOM,
+        UPDATED_ROOM,
+        DELETED_ROOM
     }
 
    

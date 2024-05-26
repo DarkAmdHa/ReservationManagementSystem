@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -236,13 +237,10 @@ public class MakeReservationServlet extends HttpServlet {
             response.getWriter().write(new Gson().toJson(jsonResponse));
             return;
         }
-
+        
+        // Get action type from request
+        String action = request.getParameter("action");
         String reservationId = request.getParameter("id");
-        String date = request.getParameter("date");
-        String startTime = request.getParameter("startTime");
-        String endTime = request.getParameter("endTime");
-        String tableId = request.getParameter("tableId");
-        String notes = request.getParameter("notes");
         
         // Check if the reservation ID is provided
         if (reservationId == null || reservationId.isEmpty()) {
@@ -255,31 +253,97 @@ public class MakeReservationServlet extends HttpServlet {
             response.getWriter().write(new Gson().toJson(jsonResponse));
             return;
         }
+        
+        int reservationIdInt = Integer.parseInt(reservationId);
 
-        // Check table availability for the given date and time
-        if (isTableAvailableForUpdate(reservationId, tableId, date, startTime, endTime)) {
-            // Table is available, update reservation
-            updateReservation(reservationId, tableId, date, startTime, endTime, notes);
+        if ("cancel".equals(action)) {
+            // Handle reservation cancellation
+            String cancellationReason = request.getParameter("reason");
+            
+            if (cancelReservation(reservationIdInt, cancellationReason, user)) {
+                // Log the cancellation with reason and timestamp
+                LogUtils.logReservationCancellation(user);
+                
+                // Provide success response
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("status", "success");
+                jsonResponse.addProperty("message", "Reservation cancelled successfully");
 
-            LogUtils.logReservationEdit(user);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(new Gson().toJson(jsonResponse));
+            } else {
+                // Provide error response
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("status", "error");
+                jsonResponse.addProperty("message", "Failed to cancel the reservation");
 
-            // Provide success response
-            JsonObject jsonResponse = new JsonObject();
-            jsonResponse.addProperty("status", "success");
-            jsonResponse.addProperty("message", "Reservation updated successfully");
-
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(new Gson().toJson(jsonResponse));
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(new Gson().toJson(jsonResponse));
+            }
         } else {
-            // Table is not available, provide error response
-            JsonObject jsonResponse = new JsonObject();
-            jsonResponse.addProperty("status", "error");
-            jsonResponse.addProperty("message", "Selected table is not available for the specified date and time");
+            // Handle reservation update
+            String date = request.getParameter("date");
+            String startTime = request.getParameter("startTime");
+            String endTime = request.getParameter("endTime");
+            String tableId = request.getParameter("tableId");
+            String notes = request.getParameter("notes");
 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(new Gson().toJson(jsonResponse));
+            // Check table availability for the given date and time
+            if (isTableAvailableForUpdate(reservationId, tableId, date, startTime, endTime)) {
+                // Table is available, update reservation
+                updateReservation(reservationId, tableId, date, startTime, endTime, notes);
+
+                LogUtils.logReservationEdit(user);
+
+                // Provide success response
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("status", "success");
+                jsonResponse.addProperty("message", "Reservation updated successfully");
+
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(new Gson().toJson(jsonResponse));
+            } else {
+                // Table is not available, provide error response
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("status", "error");
+                jsonResponse.addProperty("message", "Selected table is not available for the specified date and time");
+
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(new Gson().toJson(jsonResponse));
+            }
+        }
+    }
+    
+    
+    private boolean cancelReservation(int reservationId, String reason, User user) {
+        String query = "UPDATE reservation SET status = ?, cancellation_reason = ?, cancelled_at = ?, updated_at = ? WHERE id = ?";
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        	
+        	
+            // Set parameters for the prepared statement
+            preparedStatement.setString(1, "Cancelled");
+            preparedStatement.setString(2, reason);
+            preparedStatement.setTimestamp(3, timestamp);
+            preparedStatement.setTimestamp(4, timestamp);
+            preparedStatement.setInt(5, reservationId);
+
+            // Execute the query
+            int rowsUpdated = preparedStatement.executeUpdate();
+            
+            // Check if the update was successful
+            return rowsUpdated > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+            return false;
         }
     }
 

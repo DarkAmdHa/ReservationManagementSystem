@@ -219,4 +219,44 @@
     <servlet-name>EditProfileAdminServlet</servlet-name>
     <url-pattern>/EditProfileAdminServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>RoomManagementServlet</display-name>
+    <servlet-name>RoomManagementServlet</servlet-name>
+    <servlet-class>com.RoomManagementServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RoomManagementServlet</servlet-name>
+    <url-pattern>/RoomManagementServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>TableManagementServlet</display-name>
+    <servlet-name>TableManagementServlet</servlet-name>
+    <servlet-class>TableManagementServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TableManagementServlet</servlet-name>
+    <url-pattern>/TableManagementServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ExportServlet</display-name>
+    <servlet-name>ExportServlet</servlet-name>
+    <servlet-class>ExportServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExportServlet</servlet-name>
+    <url-pattern>/ExportServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ExportReservations</display-name>
+    <servlet-name>ExportReservations</servlet-name>
+    <servlet-class>ExportReservations</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExportReservations</servlet-name>
+    <url-pattern>/ExportReservations</url-pattern>
+  </servlet-mapping>
 </web-app>

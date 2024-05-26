@@ -71,8 +71,7 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
         <!-- Display the last two pages -->
         <c:forEach begin="${totalPages - 1}" end="${totalPages}" var="page">
-            <a href="${pageContext.request.contextPath}/ActivityLogServlet?page=${page}"
-               class="px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:bg-gray-300 ${currentPage == page ? 'bg-green-500 text-white pointer-events-none' : ''}">
+            <a href="${pageContext.request.contextPath}/ActivityLogServlet?page=${page}" class="px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:bg-gray-300 ${currentPage == page ? 'bg-green-500 text-white pointer-events-none' : ''}">
                 ${page}
             </a>
         </c:forEach>
