@@ -259,4 +259,24 @@
     <servlet-name>ExportReservations</servlet-name>
     <url-pattern>/ExportReservations</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Activity</display-name>
+    <servlet-name>Activity</servlet-name>
+    <servlet-class>Activity</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Activity</servlet-name>
+    <url-pattern>/Activity</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Analytics</display-name>
+    <servlet-name>Analytics</servlet-name>
+    <servlet-class>Analytics</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Analytics</servlet-name>
+    <url-pattern>/Analytics</url-pattern>
+  </servlet-mapping>
 </web-app>

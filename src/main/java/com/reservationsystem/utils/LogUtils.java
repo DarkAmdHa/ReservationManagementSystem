@@ -112,6 +112,11 @@ public class LogUtils {
         log(user.getId(), ActionType.REJECTED_RESERVATION, detail);
     }
 
+    public static void logReservationStatusUpdate(User user, String detail) {
+        log(user.getId(), ActionType.RESERVATION_STATUS_UPDATE, detail);
+    }
+    
+    
     private enum ActionType {
         LOGGED_IN,
         LOGGED_OUT,
@@ -129,7 +134,8 @@ public class LogUtils {
         DELETED_TABLE,
         CREATED_ROOM,
         UPDATED_ROOM,
-        DELETED_ROOM
+        DELETED_ROOM,
+        RESERVATION_STATUS_UPDATE
     }
 
    

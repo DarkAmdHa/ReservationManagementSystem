@@ -65,23 +65,56 @@ public class SetReservationStatusServlet extends HttpServlet {
         // Parse JSON request
         Gson gson = new Gson();
         ReservationStatusUpdate requestObj = gson.fromJson(requestData, ReservationStatusUpdate.class);
-
-        // Update reservation status in database
-        if (updateReservationStatus(requestObj.getId(), requestObj.getStatus())) {
-            sendJsonResponse(response, "success", "Reservation status updated successfully.");
-         // Log update
-            if(requestObj.getStatus() == "APPROVED") {
-            	LogUtils.logReservationAcceptance(user, "Accepted Reservation of id " + requestObj.getId());
-            }else {
-            	LogUtils.logReservationRejection(user, "Rejected Reservation of id " + requestObj.getId());
+        
+        if(requestObj.getStatusUpdate() != null) {
+            // Update reservation status in database
+            if (updateReservationStatus(requestObj.getId(), requestObj.getStatus())) {
+                sendJsonResponse(response, "success", "Reservation status updated successfully.");
+             // Log update
+        	LogUtils.logReservationStatusUpdate(user, "Reservation of id status changed to " + requestObj.getStatus());
+                
+            } else {
+                sendJsonResponse(response, "error", "Failed to update reservation status.");
             }
-            
-        } else {
-            sendJsonResponse(response, "error", "Failed to update reservation status.");
+        }else {
+            // Update reservation status in database
+            if (updateReservationApprovalStatus(requestObj.getId(), requestObj.getStatus())) {
+                sendJsonResponse(response, "success", "Reservation approval status updated successfully.");
+             // Log update
+                if(requestObj.getStatus() == "APPROVED") {
+                	LogUtils.logReservationAcceptance(user, "Accepted Reservation of id " + requestObj.getId());
+                }else {
+                	LogUtils.logReservationRejection(user, "Rejected Reservation of id " + requestObj.getId());
+                }
+                
+            } else {
+                sendJsonResponse(response, "error", "Failed to update reservation approval status.");
+            }
         }
+
+
     }
 
     private boolean updateReservationStatus(int reservationId, String status) {
+        String query = "UPDATE reservation SET status = ? WHERE id = ?";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, reservationId);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+            return false;
+        }
+    }
+    
+    
+    private boolean updateReservationApprovalStatus(int reservationId, String status) {
         String query = "UPDATE reservation SET approvalStatus = ? WHERE id = ?";
 
         try (Connection connection = DatabaseUtils.getConnection();
@@ -112,6 +145,7 @@ public class SetReservationStatusServlet extends HttpServlet {
     private static class ReservationStatusUpdate {
         private int id;
         private String status;
+        private Boolean statusUpdate;
 
         // Getters and setters
         public int getId() {
@@ -122,6 +156,14 @@ public class SetReservationStatusServlet extends HttpServlet {
             this.id = id;
         }
 
+        public Boolean getStatusUpdate() {
+            return statusUpdate;
+        }
+
+        public void setStatusUpdate(Boolean statusUpdate) {
+            this.statusUpdate = statusUpdate;
+        }
+        
         public String getStatus() {
             return status;
         }

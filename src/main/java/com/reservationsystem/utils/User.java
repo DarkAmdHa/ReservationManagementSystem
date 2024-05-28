@@ -347,53 +347,8 @@ public class User {
     }
     
     
-    public List<Reservation> getAllUserReservations() {
-        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, "
-                + "reservation.startTime, reservation.endTime, room.id as roomId, room.name as roomName, restauranttable.id as tableId, restauranttable.name as tableName, restauranttable.seatsCapacity as tableCapacity, user.id as userId, user.name as userName, user.email as userEmail, user.avatarUrl as avatarUrl "
-                + "FROM reservation "
-                + "JOIN user ON reservation.userId = user.id "
-                + "JOIN restauranttable ON reservation.tableId = restauranttable.id "
-                + "JOIN room ON restauranttable.roomId = room.id "
-                + "ORDER BY reservation.date ASC, reservation.startTime ASC;";
-
-        try {
-            Connection connection = DatabaseUtils.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            List<Reservation> reservations = new ArrayList<>();
-
-            while (resultSet.next()) {
-                Reservation reservation = new Reservation();
-                reservation.setId(resultSet.getInt("id"));
-                reservation.setDate(resultSet.getDate("date"));
-                reservation.setStartTime(resultSet.getString("startTime"));
-                reservation.setEndTime(resultSet.getString("endTime"));
-                reservation.setTableId(resultSet.getInt("tableId"));
-                reservation.setTableName(resultSet.getString("tableName"));
-                reservation.setTableCapacity(resultSet.getString("tableCapacity"));
-                reservation.setRoomId(resultSet.getInt("roomId"));
-                reservation.setRoomName(resultSet.getString("roomName"));
-                reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
-                reservation.setUserId(resultSet.getInt("userId"));
-                reservation.setUserName(resultSet.getString("userName"));
-                reservation.setUserEmail(resultSet.getString("userEmail"));
-                reservation.setAvatarUrl(resultSet.getString("avatarUrl"));
-
-                reservations.add(reservation);
-            }
-
-            return reservations;
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Handle exception, log error, etc.
-            return null;
-        }
-    }
-    
-    
     public List<Reservation> searchReservations(String searchBy, String searchTerm) {
-        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, "
+        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus,reservation.status, "
                 + "reservation.startTime, reservation.endTime, room.id as roomId, room.name as roomName, restauranttable.id as tableId, restauranttable.name as tableName, restauranttable.seatsCapacity as tableCapacity, user.id as userId, user.name as userName, user.email as userEmail, user.avatarUrl as avatarUrl "
                 + "FROM reservation "
                 + "JOIN user ON reservation.userId = user.id "
@@ -445,7 +400,7 @@ public class User {
     	    
     	    PreparedStatement preparedStatement = connection.prepareStatement(query);
     	    
-    	    if(searchBy == "all" && searchTerm == "") {
+    	    if(!searchBy.equals("all") || !searchTerm.equals("")) {
                 if ("all".equals(searchBy)) {
                     preparedStatement.setString(parameterIndex++, "%" + searchTerm + "%");
                     preparedStatement.setString(parameterIndex++, "%" + searchTerm + "%");
@@ -456,6 +411,7 @@ public class User {
                     preparedStatement.setString(parameterIndex, "%" + searchTerm + "%");
                 }
     	    }
+
 
     	    System.out.println("Final SQL Query: " + query); // Print the final query with placeholders
     
@@ -473,6 +429,151 @@ public class User {
                 reservation.setRoomId(resultSet.getInt("roomId"));
                 reservation.setRoomName(resultSet.getString("roomName"));
                 reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+                reservation.setStatus(resultSet.getString("status"));
+                reservation.setUserId(resultSet.getInt("userId"));
+                reservation.setUserName(resultSet.getString("userName"));
+                reservation.setUserEmail(resultSet.getString("userEmail"));
+                reservation.setAvatarUrl(resultSet.getString("avatarUrl"));
+
+                reservations.add(reservation);
+            }
+    	  } catch (Exception e) {
+    	    e.printStackTrace();
+    	    return null;
+    	  }
+
+    	  return reservations; // Assuming reservations list is populated within the try block
+    	}
+
+    
+    
+    public List<Reservation> getAllUserReservations() {
+        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, reservation.status, "
+                + "reservation.startTime, reservation.endTime, room.id as roomId, room.name as roomName, restauranttable.id as tableId, restauranttable.name as tableName, restauranttable.seatsCapacity as tableCapacity, user.id as userId, user.name as userName, user.email as userEmail, user.avatarUrl as avatarUrl "
+                + "FROM reservation "
+                + "JOIN user ON reservation.userId = user.id "
+                + "JOIN restauranttable ON reservation.tableId = restauranttable.id "
+                + "JOIN room ON restauranttable.roomId = room.id "
+                + "ORDER BY reservation.date ASC, reservation.startTime ASC;";
+
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Reservation> reservations = new ArrayList<>();
+
+            while (resultSet.next()) {
+                Reservation reservation = new Reservation();
+                reservation.setId(resultSet.getInt("id"));
+                reservation.setDate(resultSet.getDate("date"));
+                reservation.setStartTime(resultSet.getString("startTime"));
+                reservation.setEndTime(resultSet.getString("endTime"));
+                reservation.setTableId(resultSet.getInt("tableId"));
+                reservation.setTableName(resultSet.getString("tableName"));
+                reservation.setTableCapacity(resultSet.getString("tableCapacity"));
+                reservation.setRoomId(resultSet.getInt("roomId"));
+                reservation.setRoomName(resultSet.getString("roomName"));
+                reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+                reservation.setStatus(resultSet.getString("status"));
+                reservation.setUserId(resultSet.getInt("userId"));
+                reservation.setUserName(resultSet.getString("userName"));
+                reservation.setUserEmail(resultSet.getString("userEmail"));
+                reservation.setAvatarUrl(resultSet.getString("avatarUrl"));
+
+                reservations.add(reservation);
+            }
+
+            return reservations;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, log error, etc.
+            return null;
+        }
+    }
+    
+    
+    public List<Reservation> searchPendingReservations(String searchBy, String searchTerm) {
+        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, reservation.status, "
+                + "reservation.startTime, reservation.endTime, room.id as roomId, room.name as roomName, restauranttable.id as tableId, restauranttable.name as tableName, restauranttable.seatsCapacity as tableCapacity, user.id as userId, user.name as userName, user.email as userEmail, user.avatarUrl as avatarUrl "
+                + "FROM reservation "
+                + "JOIN user ON reservation.userId = user.id "
+                + "JOIN restauranttable ON reservation.tableId = restauranttable.id "
+                + "JOIN room ON restauranttable.roomId = room.id "
+                + "WHERE reservation.approvalStatus = \"PENDING\" ";
+
+    	  
+          List<Reservation> reservations = new ArrayList<>();
+
+    	  // Append WHERE clause based on searchBy (improved with prepared statement)
+
+
+    	  try {
+              Connection connection = DatabaseUtils.getConnection();
+              
+    	    int parameterIndex = 1;
+    	    
+    	    if(searchBy.equals("all") && searchTerm.equals("")) {
+        	    query += " ORDER BY reservation.date ASC, reservation.startTime ASC";
+    	    }else {	     	 
+	    	    switch (searchBy) {
+	    	      case "all":
+	    	    	  query += "AND (user.name LIKE ? OR user.email LIKE ? OR restauranttable.name LIKE ? OR restauranttable.seatsCapacity LIKE ? OR room.name LIKE ?)";
+	      	        break;
+	    	      case "user_name":
+	    	    	query += "AND user.name LIKE ?";
+	    	        
+	    	        break;
+	    	      case "user_email":
+	    	        query += "AND user.email LIKE ?";
+	    	        break;
+	    	      case "table_number":
+	    	        query += "AND restauranttable.name LIKE ?";
+	    	        break;
+	    	      case "seat_numbers":
+	      	        query += "AND restauranttable.seatsCapacity LIKE ?";
+	    	        break;
+	    	      case "room_name":
+	    	        query += "AND room.name LIKE ?";
+	    	        break;
+	    	      default:
+	    	        return null;
+	    	    }
+	    	    query += " ORDER BY reservation.date ASC, reservation.startTime ASC";
+    	    }
+    	    
+    	    PreparedStatement preparedStatement = connection.prepareStatement(query);
+    	    
+    	    if(!searchBy.equals("all") || !searchTerm.equals("")) {
+                if ("all".equals(searchBy)) {
+                    preparedStatement.setString(parameterIndex++, "%" + searchTerm + "%");
+                    preparedStatement.setString(parameterIndex++, "%" + searchTerm + "%");
+                    preparedStatement.setString(parameterIndex++, "%" + searchTerm + "%");
+                    preparedStatement.setString(parameterIndex++, "%" + searchTerm + "%");
+                    preparedStatement.setString(parameterIndex++, "%" + searchTerm + "%");
+                } else {
+                    preparedStatement.setString(parameterIndex, "%" + searchTerm + "%");
+                }
+    	    }
+
+
+    	    System.out.println("Final SQL Query: " + query); // Print the final query with placeholders
+    
+    	    ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Reservation reservation = new Reservation();
+                reservation.setId(resultSet.getInt("id"));
+                reservation.setDate(resultSet.getDate("date"));
+                reservation.setStartTime(resultSet.getString("startTime"));
+                reservation.setEndTime(resultSet.getString("endTime"));
+                reservation.setTableId(resultSet.getInt("tableId"));
+                reservation.setTableName(resultSet.getString("tableName"));
+                reservation.setTableCapacity(resultSet.getString("tableCapacity"));
+                reservation.setRoomId(resultSet.getInt("roomId"));
+                reservation.setRoomName(resultSet.getString("roomName"));
+                reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+                reservation.setStatus(resultSet.getString("status"));
                 reservation.setUserId(resultSet.getInt("userId"));
                 reservation.setUserName(resultSet.getString("userName"));
                 reservation.setUserEmail(resultSet.getString("userEmail"));
@@ -489,7 +590,7 @@ public class User {
     	}
 
     public List<Reservation> reservationsByDate(String startDate, String endDate) {
-        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, "
+        String query = "SELECT reservation.id, reservation.date, reservation.approvalStatus, reservation.status, "
                 + "reservation.startTime, reservation.endTime, room.id as roomId, room.name as roomName, restauranttable.id as tableId, restauranttable.name as tableName, restauranttable.seatsCapacity as tableCapacity, user.id as userId, user.name as userName, user.email as userEmail, user.avatarUrl as avatarUrl "
                 + "FROM reservation "
                 + "JOIN user ON reservation.userId = user.id "
@@ -538,6 +639,7 @@ public class User {
                 reservation.setRoomId(resultSet.getInt("roomId"));
                 reservation.setRoomName(resultSet.getString("roomName"));
                 reservation.setApprovalStatus(resultSet.getString("approvalStatus"));
+                reservation.setStatus(resultSet.getString("status"));
                 reservation.setUserId(resultSet.getInt("userId"));
                 reservation.setUserName(resultSet.getString("userName"));
                 reservation.setUserEmail(resultSet.getString("userEmail"));

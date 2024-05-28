@@ -3,7 +3,7 @@
 <%@ attribute name="bodyClasses" required="false" %>
 <%@ attribute name="additionalHeadersStuff" required="false" %>
 
-<html lang="en">
+<html lang="en" class='overflow-hidden'>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,6 +39,7 @@ body:after {
     transition: 0.5s ease;
     pointer-events: none;
     z-index: 99;
+
 }
 
 body.isLoading:after {
@@ -219,6 +220,10 @@ pointer-events: visible;
 p.status {
     width: 90px;
     font-size: 13px;
+}
+
+main{
+overflow: auto;
 }
     
     </style>

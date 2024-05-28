@@ -320,7 +320,7 @@ public class MakeReservationServlet extends HttpServlet {
     
     
     private boolean cancelReservation(int reservationId, String reason, User user) {
-        String query = "UPDATE reservation SET status = ?, cancellation_reason = ?, cancelled_at = ?, updated_at = ? WHERE id = ?";
+        String query = "UPDATE reservation SET status = ?, cancellation_reason = ?, cancelled_at = ?, updated_at = ?,  approvalStatus=? WHERE id = ?";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         
         try (Connection connection = DatabaseUtils.getConnection();
@@ -332,7 +332,8 @@ public class MakeReservationServlet extends HttpServlet {
             preparedStatement.setString(2, reason);
             preparedStatement.setTimestamp(3, timestamp);
             preparedStatement.setTimestamp(4, timestamp);
-            preparedStatement.setInt(5, reservationId);
+            preparedStatement.setString(5, "DISAPPROVED");
+            preparedStatement.setInt(6, reservationId);
 
             // Execute the query
             int rowsUpdated = preparedStatement.executeUpdate();

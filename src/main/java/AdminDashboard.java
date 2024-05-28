@@ -67,12 +67,18 @@ public class AdminDashboard extends HttpServlet {
         	 userReservations = user.getAllUserReservations();
          }
          
-         
          // Pagination logic
          String pageStr = request.getParameter("page");
          int currentPage = pageStr != null ? Integer.parseInt(pageStr) : 1;
          int startIndex = (currentPage - 1) * PAGE_SIZE;
-         int endIndex = Math.min(startIndex + PAGE_SIZE, userReservations.size());
+         int endIndex;
+         if(userReservations!= null) {
+             endIndex = Math.min(startIndex + PAGE_SIZE, userReservations.size());        	 
+             request.setAttribute("totalPages", (int) Math.ceil((double) userReservations.size() / PAGE_SIZE));
+         }
+         else {
+             endIndex = startIndex + PAGE_SIZE;
+         }
          
       // Extract the sublist for the current page
          List<Reservation> allReservations = userReservations.subList(startIndex, endIndex);
@@ -83,11 +89,11 @@ public class AdminDashboard extends HttpServlet {
          request.setAttribute("userRole", user.getRole());
          request.setAttribute("userId", userId);
          request.setAttribute("userAvatarUrl", user.getAvatarUrl());
-         request.setAttribute("allReservations", userReservations);
+         request.setAttribute("allReservations", allReservations);
          
       // Pagination information
          request.setAttribute("currentPage", currentPage);
-         //request.setAttribute("totalPages", (int) Math.ceil((double) userReservations.size() / PAGE_SIZE));
+         
 
          request.setAttribute("searchBy", searchBy);
          request.setAttribute("searchTerm", searchTerm);

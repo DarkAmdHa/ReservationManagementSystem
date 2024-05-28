@@ -1,83 +1,81 @@
+<form
+  action="ReservationServlet"
+  method="post"
+  class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md"
+>
+  <input type="hidden" id="editReservationId" value="${reservation.id}" />
+  <div class="mb-4">
+    <label for="date" class="block text-gray-700 font-bold mb-2"
+      >Reservation Date:</label
+    >
+    <input
+      type="date"
+      id="date"
+      name="date"
+      class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+    />
+  </div>
 
-  <form
-    action="ReservationServlet"
-    method="post"
-    class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md"
-  >
-  <input type="hidden" id="editReservationId" value="${reservation.id}">
-    <div class="mb-4">
-      <label for="date" class="block text-gray-700 font-bold mb-2"
-        >Reservation Date:</label
-      >
-      <input
-        type="date"
-        id="date"
-        name="date"
-        class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-      />
-    </div>
+  <div class="mb-4">
+    <label for="startTime" class="block text-gray-700 font-bold mb-2"
+      >Reservation Start Time:</label
+    >
+    <input
+      type="time"
+      id="startTime"
+      name="startTime"
+      class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+    />
+  </div>
 
-    <div class="mb-4">
-      <label for="startTime" class="block text-gray-700 font-bold mb-2"
-        >Reservation Start Time:</label
-      >
-      <input
-        type="time"
-        id="startTime"
-        name="startTime"
-        class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-      />
-    </div>
+  <div class="mb-4 endTimeField hidden">
+    <label for="endTime" class="block text-gray-700 font-bold mb-2"
+      >Reservation End Time:</label
+    >
 
-    <div class="mb-4 endTimeField hidden">
-      <label for="endTime" class="block text-gray-700 font-bold mb-2"
-        >Reservation End Time:</label
-      >
+    <select
+      id="endTime"
+      name="endTime"
+      class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+      required
+    >
+      <option disabled selected value="">Reservation End Time</option>
+    </select>
+  </div>
 
-      <select
-        id="endTime"
-        name="endTime"
-        class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-        required
-      >
-        <option disabled selected value="">Reservation End Time</option>
-      </select>
-    </div>
+  <div class="mb-4">
+    <p class="block text-gray-500 text-center mb-2 infoText">
+      Select a date and time for your reservation.
+    </p>
 
-    <div class="mb-4">
-      <p class="block text-gray-500 text-center mb-2 infoText">
-        Select a date and time for your reservation.
-      </p>
+    <div class="tableSelectorContainer flex flex-col items-center"></div>
+    <div class="errorsContainer flex flex-col items-center"></div>
+  </div>
 
-      <div class="tableSelectorContainer flex flex-col items-center"></div>
-      <div class="errorsContainer flex flex-col items-center"></div>
-    </div>
-
-    <div class="mb-4">
-      <label for="specialRequests" class="block text-gray-700 font-bold mb-2"
-        >Special Requests:</label
-      >
-      <textarea
-        id="specialRequests"
-        name="specialRequests"
-        class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-      ></textarea>
-    </div>
-	<ul class='submissionErrors text-sm text-red-500'>
-	</ul>
-    <div class="flex items-center justify-between">
-      <button
-        type="submit"
-        class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none submitButton"
-        disabled
-      >
-        Submit Reservation
-      </button>
-      <a href="ReservationsServlet" class="text-gray-500 hover:underline cancel"
-        >Cancel</a
-      >
-    </div>
-  </form>
+  <div class="mb-4">
+    <label for="specialRequests" class="block text-gray-700 font-bold mb-2"
+      >Special Requests:</label
+    >
+    <textarea
+      id="specialRequests"
+      name="specialRequests"
+      class="w-full border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+    ></textarea>
+  </div>
+  <ul class="submissionErrors text-sm text-red-500 pb-2"></ul>
+  <div class="flex items-center justify-between">
+    <button
+      type="submit"
+      class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none submitButton"
+      disabled
+    >
+      Submit Reservation
+    </button>
+    <a href="ReservationsServlet" class="text-gray-500 hover:underline cancel"
+      >Cancel</a
+    >
+  </div>
+</form>
 
 <script>
   const dateInput = document.querySelector("#date"),
@@ -302,7 +300,7 @@
           room.tables.forEach((table) => {
             tableSelectorContainer.querySelector(
               `${'.allTables [data-room-name="${room.roomName}"]'}`
-            ).innerHTML += `<input type="radio" id="${"${table.tableName}"}" name="tableSelector" class="hidden" data-table-id="${"${table.tableId}"}"> <label for="${"${table.tableName}"}" class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-green-500 transition tableTab">${"${table.tableName}"}</label>`;
+            ).innerHTML += `<input type="radio" id="${"${table.tableName}"}" name="tableSelector" class="hidden" data-table-id="${"${table.tableId}"}"> <label for="${"${table.tableName}"}" class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-green-500 transition tableTab">${"${table.tableName}"} - ${"${table.capacity} seats"}</label>`;
           });
         });
 
@@ -379,7 +377,6 @@
     .querySelector(".submitButton")
     .addEventListener("click", async (event) => {
       event.preventDefault();
-      
 
       const date = dateInput.value;
       const startTime = startTimeInput.value;
@@ -400,62 +397,63 @@
         return;
       }
       setLoading(true);
-      setTimeout(async()=>{
-      try {
-        const response = await fetch(
-          "/reservation_system/MakeReservationServlet",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-              date,
-              startTime,
-              endTime,
-              tableId,
-              notes: specialRequests,
-            }),
+      setTimeout(async () => {
+        try {
+          const response = await fetch(
+            "/reservation_system/MakeReservationServlet",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams({
+                date,
+                startTime,
+                endTime,
+                tableId,
+                notes: specialRequests,
+              }),
+            }
+          );
+          setLoading(false);
+
+          if (response.ok) {
+            //No server crashes, check response:
+            const data = await response.json();
+
+            if (data.status === "success") {
+              window.location.href =
+                "${pageContext.request.contextPath}/ReservationsServlet?reservationEdited=true";
+            } else if (data.status === "USER_SESSION_EXPIRED") {
+              window.location.href =
+                "${pageContext.request.contextPath}/LoginServlet?notLoggedIn=true";
+            } else {
+              pushError(data.message);
+            }
+          } else {
+            console.error("Error submitting reservation:", error);
+            pushError("The reservation couldn't be submitted.");
           }
-        );
-        setLoading(false);
-        
-        	if (response.ok) {
-                //No server crashes, check response:
-                const data = await response.json();
-                
-                if(data.status === 'success'){
-              	  window.location.href='${pageContext.request.contextPath}/ReservationsServlet?reservationEdited=true';
-                }else if(data.status === 'USER_SESSION_EXPIRED'){
-              	  window.location.href='${pageContext.request.contextPath}/LoginServlet?notLoggedIn=true';
-                }else{
-              	  pushError(data.message);
-                }
-              } else {
-                console.error("Error submitting reservation:", error);
-                pushError('The reservation couldn\'t be submitted.')
-              }
-      } catch (error) {
-        console.error("Error submitting reservation:", error);
-        pushError('Something went wrong on the server. We\'re working on it!')
-        setLoading(false);
-      }
-      
-      },1000)
+        } catch (error) {
+          console.error("Error submitting reservation:", error);
+          pushError("Something went wrong on the server. We're working on it!");
+          setLoading(false);
+        }
+      }, 1000);
     });
-  
-  const pushError =(msg, success=false) => {
-	  const li = document.createElement('li');
-	  li.innerText = msg;
-	  li.classList.add('fadeup');
-	  if(!success){
-		  li.classList.add('text-red-500')
-	  }else{
-		  li.classList.add('text-green-500')
-	  }
-	  document.querySelector('.submissionError').appendChild(li);  
-	  setTimeout(()=>{
-		  li.remove();
-	  },2000)
-  }
+
+  const pushError = (msg, success = false) => {
+    const li = document.createElement("li");
+    li.innerText = msg;
+    li.classList.add("fadeup");
+    if (!success) {
+      li.classList.add("text-red-500");
+    } else {
+      li.classList.add("text-green-500");
+    }
+    document.querySelector(".submissionError").appendChild(li);
+    setTimeout(() => {
+      li.remove();
+    }, 4000);
+  };
 </script>

@@ -39,11 +39,21 @@ public class PendingReservationsServlet extends HttpServlet {
             return;
         }
 
-        // Retrieve only pending reservations
-        List<Reservation> pendingReservations = user.getPendingUserReservations();
+        String searchBy = request.getParameter("searchBy");
+        String searchTerm = request.getParameter("searchTerm");
+        
+        
+        // Retrieve reservations for the user
+        List<Reservation> pendingReservations;
+        if (searchBy != null && searchTerm != null) {
+        	pendingReservations = user.searchPendingReservations(searchBy, searchTerm);
+        } else {
+        	pendingReservations = user.getPendingUserReservations();
+        }
+
 
         // Handle case with no pending reservations
-        if (pendingReservations.isEmpty()) {
+        if (pendingReservations == null ) {
             request.setAttribute("noPendingReservationsMessage", "No pending reservations at the moment.");
         } else {
             // Pagination logic
@@ -67,6 +77,9 @@ public class PendingReservationsServlet extends HttpServlet {
         request.setAttribute("userRole", user.getRole());
         request.setAttribute("userId", userId);
         request.setAttribute("userAvatarUrl", user.getAvatarUrl());
+        
+        request.setAttribute("searchBy", searchBy);
+        request.setAttribute("searchTerm", searchTerm);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/pendingReservations.jsp");
         dispatcher.forward(request, response);

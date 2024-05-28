@@ -10,12 +10,42 @@
 
 <main class="flex-1 p-10">
     <h2 class="text-xl font-semibold mb-4">Pending Reservations</h2>
+    
+    <form action="${pageContext.request.contextPath}/PendingReservationsServlet" method="get">
+  <input type="hidden" name="page" value="${currentPage}">
+
+     <div class="flex gap-2 mb-4 items-end">
+ 	
+        <div class="flex flex-col gap-2 flex-1">
+            <label for="searchTerm">Search Term</label>
+            <input type="text" id="searchTerm" name="searchTerm" class="border border-gray-300 rounded-md px-2 py-1 flex-grow" value="${searchTerm}">
+        </div>
+        <div class="flex flex-col gap-2 flex-1">
+            <label for="searchBy">Search By</label>
+            <select id="searchBy" name="searchBy" class="border border-gray-300 rounded-md px-2 py-1">
+                <option value="all" <c:if test="${searchBy eq 'user_name'}">selected</c:if>>All</option>
+                <option value="user_name" <c:if test="${searchBy eq 'user_name'}">selected</c:if>>User Name</option>
+                <option value="user_email" <c:if test="${searchBy eq 'user_email'}">selected</c:if>>User Email</option>
+                <option value="table_number" <c:if test="${searchBy eq 'table_number'}">selected</c:if>>Table Number</option>
+                <option value="seat_numbers" <c:if test="${searchBy eq 'seat_numbers'}">selected</c:if>>Seats Capacity</option>
+                <option value="room_name" <c:if test="${searchBy eq 'room_name'}">selected</c:if>>Room Name</option>
+              </select>
+        </div>
+
+  <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md inline-block hover:bg-red-600 transition flex-1 h-fit max-w-12">
+    Search
+  </button>
+</div>
+</form>
+
+
             <table class="rounded min-w-full border-collapse border border-gray-200 mt-4" style="box-shadow: -10px 0px 20px 8px rgb(0 0 0 / 7%);">
                 <thead class='bg-gray-200 '>
                     <tr class='border border-1 border-gray-300'>
-                    	<th class="p-2 text-left text-gray-500 font-medium">User</th>
-                        <th class="p-2 text-left text-gray-500 font-medium">Room</th>
+                    	<th class="p-2 text-left text-gray-500 font-medium">Reserved By</th>
+                        <th class="p-2 text-left text-gray-500 font-medium">Room Name</th>
                         <th class="p-2 text-left text-gray-500 font-medium">Table</th>
+                        <th class="p-2 text-left text-gray-500 font-medium">Table Capacity <span class='text-xs'>(seats)</span></th>
                         <th class=" p-2 text-left text-gray-500 font-medium">Date</th>
 						<th class=" p-2 text-left text-gray-500 font-medium">From - To</th>	
                         <th class="p-2 text-left text-gray-500 font-medium text-center">Status</th>
@@ -53,8 +83,18 @@
                         		${reservation.userName}
                         	</div>
                         </td>
-                                                    <td class="p-2">${reservation.roomName}</td>
+                            <td class="p-2">${reservation.roomName}</td>
                             <td class="p-2">${reservation.tableName}</td>
+                            <td class="p-2 text-left text-gray-500 font-medium">
+	                             <c:choose>
+							        <c:when test="${reservation.tableCapacity >= 10}">
+							            10+
+							        </c:when>
+							        <c:otherwise>
+							            ${reservation.tableCapacity}
+							        </c:otherwise>
+							    </c:choose>
+                           	</td>
                             <td class="p-2">${reservation.date}</td>
 							<td class="p-2">${reservation.startTime} - ${reservation.endTime}</td>
                             <td class="p-2 flex gap-3 items-center justify-center">

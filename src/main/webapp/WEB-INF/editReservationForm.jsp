@@ -302,7 +302,7 @@
           room.tables.forEach((table) => {
             tableSelectorContainer.querySelector(
               `${'.allTables [data-room-name="${room.roomName}"]'}`
-            ).innerHTML += `<input type="radio" id="${"${table.tableName}"}" name="tableSelector" class="hidden" data-table-id="${"${table.tableId}"}"> <label for="${"${table.tableName}"}" class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-green-500 transition tableTab">${"${table.tableName}"}</label>`;
+            ).innerHTML += `<input type="radio" id="${"${table.tableName}"}" name="tableSelector" class="hidden" data-table-id="${"${table.tableId}"}"> <label for="${"${table.tableName}"}" class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-green-500 transition tableTab">${"${table.tableName}"} - ${"${table.capacity}"}</label>`;
           });
         });
 

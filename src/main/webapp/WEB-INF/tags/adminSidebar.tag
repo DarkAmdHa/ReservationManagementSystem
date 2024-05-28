@@ -9,7 +9,7 @@
 
 
 <aside
-      class="bg-white w-1/6 text-gray-600 shadow-lg max-w-screen sticky flex flex-col"
+      class="bg-white w-1/6 text-gray-600 shadow-lg max-w-screen sticky flex flex-col top-0"
     >
       <div class="mb-4 px-6 py-3 border-b border-gray-200">
         <img
@@ -50,48 +50,52 @@ if (isEdited) { %>
 	        
       <nav class="px-6 flex flex-col gap-2 h-full">
        <c:if test="${userRole eq 'ADMIN'}">
-       <c:forEach var="link" items="${['AdminDashboard', 'PendingReservationsServlet',  'PendingUsersServlet','UserManagementServlet','RoomManagementServlet','TableManagementServlet','ManagersServlet','EditProfileAdminServlet', 'AllUsersActivityServlet']}">
+       <c:forEach var="link" items="${['AdminDashboard', 'PendingReservationsServlet',  'PendingUsersServlet', 'Analytics','UserManagementServlet','RoomManagementServlet','TableManagementServlet','ManagersServlet','EditProfileAdminServlet', 'AllUsersActivityServlet']}">
       	    <c:set var="linkText" />
     		<c:set var="fontAwesomeIcon" />
     		
     		<c:choose>
-		      <c:when test="${link eq 'AdminDashboard'}">
-		        <c:set var="linkText" value="Dashboard" />
-		        <c:set var="fontAwesomeIcon" value="fa-tachometer-alt" />
-		      </c:when>
-		      <c:when test="${link eq 'PendingReservationsServlet'}">
-		        <c:set var="linkText" value="Pending Reservations" />
-		        <c:set var="fontAwesomeIcon" value="fa-clock" />
-		      </c:when>
-   		      <c:when test="${link eq 'PendingUsersServlet'}">
-		        <c:set var="linkText" value="Pending Users" />
-		        <c:set var="fontAwesomeIcon" value="fa-clock" />
-	      </c:when>	
-     		      <c:when test="${link eq 'UserManagementServlet'}">
-		        <c:set var="linkText" value="User Management" />
-		        <c:set var="fontAwesomeIcon" value="fa-book" />
-	      </c:when>	
-		      <c:when test="${link eq 'RoomManagementServlet'}">
-		        <c:set var="linkText" value="Room Management" />
-		        <c:set var="fontAwesomeIcon" value="fa-house" />
-	      </c:when>	
-	       		      <c:when test="${link eq 'TableManagementServlet'}">
-		        <c:set var="linkText" value="Table Management" />
-		        <c:set var="fontAwesomeIcon" value="fa-table" />
-	      </c:when>	
-    		      <c:when test="${link eq 'ManagersServlet'}">
-		        <c:set var="linkText" value="Managers" />
-		        <c:set var="fontAwesomeIcon" value="fa-people-roof" />
-		      </c:when>
-		      <c:when test="${link eq 'EditProfileAdminServlet'}">
-		        <c:set var="linkText" value="Edit Profile" />
-		        <c:set var="fontAwesomeIcon" value="fa-user-edit" />
-		      </c:when>
-   		      <c:when test="${link eq 'AllUsersActivityServlet'}">
-		        <c:set var="linkText" value="All Users Activity" />
-		        <c:set var="fontAwesomeIcon" value="fa-user" />
-		      </c:when>
-		    </c:choose>
+			    <c:when test="${link eq 'AdminDashboard'}">
+			        <c:set var="linkText" value="Dashboard" />
+			        <c:set var="fontAwesomeIcon" value="fa-tachometer-alt" />
+			    </c:when>
+			    <c:when test="${link eq 'PendingReservationsServlet'}">
+			        <c:set var="linkText" value="Pending Reservations" />
+			        <c:set var="fontAwesomeIcon" value="fa-clock" />
+			    </c:when>
+			    <c:when test="${link eq 'PendingUsersServlet'}">
+			        <c:set var="linkText" value="Pending Users" />
+			        <c:set var="fontAwesomeIcon" value="fa-clock" />
+			    </c:when>    
+			    <c:when test="${link eq 'Analytics'}">
+			        <c:set var="linkText" value="Analytics" />
+			        <c:set var="fontAwesomeIcon" value="fa-chart-bar" />
+			    </c:when>    
+			    <c:when test="${link eq 'UserManagementServlet'}">
+			        <c:set var="linkText" value="User Management" />
+			        <c:set var="fontAwesomeIcon" value="fa-book" />
+			    </c:when>    
+			    <c:when test="${link eq 'RoomManagementServlet'}">
+			        <c:set var="linkText" value="Room Management" />
+			        <c:set var="fontAwesomeIcon" value="fa-house" />
+			    </c:when>    
+			    <c:when test="${link eq 'TableManagementServlet'}">
+			        <c:set var="linkText" value="Table Management" />
+			        <c:set var="fontAwesomeIcon" value="fa-table" />
+			    </c:when>    
+			    <c:when test="${link eq 'ManagersServlet'}">
+			        <c:set var="linkText" value="Managers" />
+			        <c:set var="fontAwesomeIcon" value="fa-people-roof" />
+			    </c:when>
+			    <c:when test="${link eq 'EditProfileAdminServlet'}">
+			        <c:set var="linkText" value="Edit Profile" />
+			        <c:set var="fontAwesomeIcon" value="fa-user-edit" />
+			    </c:when>
+			    <c:when test="${link eq 'AllUsersActivityServlet'}">
+			        <c:set var="linkText" value="All Users Activity" />
+			        <c:set var="fontAwesomeIcon" value="fa-user" />
+			    </c:when>
+			</c:choose>
 		    
 		    <a
 		      href="${link}"

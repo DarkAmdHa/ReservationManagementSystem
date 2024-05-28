@@ -41,10 +41,11 @@
 </div>
 </form>
 
+<c:if test="${userRole eq 'ADMIN'}">
 <a href='#' class='exportReservations text-red-500 underline transition hover:text-red-400'>
 	Export Reservations
 </a>
-
+</c:if>
 
     <c:choose>
          <c:when test="${empty allReservations and not empty searchTerm }">
@@ -70,9 +71,10 @@
                     	<th class="p-2 text-left text-gray-500 font-medium">Reserved By</th>
                         <th class="p-2 text-left text-gray-500 font-medium">Room Name</th>
                         <th class="p-2 text-left text-gray-500 font-medium">Table</th>
-                        <th class="p-2 text-left text-gray-500 font-medium">Table Capacity</th>
+                        <th class="p-2 text-left text-gray-500 font-medium">Table Capacity <span class='text-xs'>(seats)</span></th>
                         <th class=" p-2 text-left text-gray-500 font-medium">Date</th>
 						<th class=" p-2 text-left text-gray-500 font-medium">From - To</th>	
+                        <th class="p-2 text-left text-gray-500 font-medium text-center">Approval Status</th>
                         <th class="p-2 text-left text-gray-500 font-medium text-center">Status</th>
                     </tr>
                 </thead>
@@ -98,23 +100,21 @@
                         		${reservation.userName}
                         	</div>
                         </td>
-                                                    <td class="p-2">${reservation.roomName}</td>
+                              <td class="p-2">${reservation.roomName}</td>
                             <td class="p-2">${reservation.tableName}</td>
-                           <th class="p-2 text-left text-gray-500 font-medium">
+                           <td class="p-2 text-left text-gray-500 font-medium">
                              <c:choose>
 						        <c:when test="${reservation.tableCapacity >= 10}">
-						            10+ Seats
+						            10+
 						        </c:when>
 						        <c:otherwise>
-						            ${reservation.tableCapacity} Seats
+						            ${reservation.tableCapacity}
 						        </c:otherwise>
 						    </c:choose>
-                           </th>
+                           </td>
                             <td class="p-2">${reservation.date}</td>
 							<td class="p-2">${reservation.startTime} - ${reservation.endTime}</td>
                             <td class="p-2 flex gap-3 items-center justify-center">
-                            
-							                            
                                 <c:choose>
                                     <c:when test='${reservation.approvalStatus eq "APPROVED"}'>
                                     	<p class='status text-green-500'>Approved</p>
@@ -134,17 +134,61 @@
 										    <div class="toggle-slider"></div>
 										</label>	
                                     </c:when>
-                                    <c:otherwise>
-                                    <p class='status text-gray-500'>Pending</p>
+                                    <c:when test='${reservation.approvalStatus eq "PENDING"}'>
+										<p class='status text-gray-500'>Pending</p>
 										<input type="checkbox" class='statusToggle' id="statusToggle-${reservation.id }"  hidden onchange="handleToggleChange('${reservation.id}', this)" />
 										
 										<!--	 Visual Toggle Div -->
 										<label for="statusToggle-${reservation.id }" checked="false" class="toggle-switch">
 										    <div class="toggle-slider"></div>
 										</label>
+                                   </c:when>
+                                    
+                                    <c:otherwise>
+    									<p class='status text-gray-500'>Passed</p>
 									</c:otherwise>
                                 </c:choose>
                             </td>
+
+                             <td class="p-2 text-xs">
+                                <c:choose>
+                                    <c:when test='${reservation.status eq "Reserved"}'>
+                                    	<p class='status text-green-500 mb-2 statusText'>Reserved</p>
+                        				<c:if test="${reservation.approvalStatus != 'PASSED'}">
+	                            			<div class='statusChange flex rounded overflow-hidden border border-gray-500' id="statusButtons-${reservation.id }" >
+	                                    		<button class='bg-green-500 text-white opacity-70 px-2 py-1  pointer-events-none px-2 py-1 w-full statusChange' data-value="Reserved" disabled>Reserved</button>
+	                                    		<button class='bg-transparent text-black px-2 py-1 hover:bg-green-500 hover:opacity-80 transition  w-full statusChange' data-value="Missed">Missed</button>
+	                                    		<button class='bg-transparent text-black px-2 py-1 hover:bg-green-500 hover:opacity-80 transition w-full statusChange'  data-value="Attended">Attended</button>
+	                                    	</div>
+                            			</c:if>							
+                                    </c:when>
+                                    <c:when test='${reservation.status eq "Cancelled"}'>
+                                    	<p class='status text-red-500 mb-2'>Cancelled</p>
+                                    </c:when>
+               	                   <c:when test='${reservation.status eq "Missed"}'>
+                                    	<p class='status text-red-500 mb-2'>Missed</p>
+                                		<c:if test="${reservation.approvalStatus != 'PASSED'}">
+                            				<div class='statusChange flex rounded overflow-hidden border border-gray-500' id="statusButtons-${reservation.id }" >
+	                                    		<button class=' w-full bg-transparent text-black px-2 py-1 hover:bg-green-500 hover:opacity-80 transition statusChange' data-value="Reserved">Reserved</button>
+	                                    		<button class=' w-full bg-green-500 text-white px-2 py-1   opacity-70 pointer-events-none statusChange' data-value="Missed" disabled>Missed</button>
+	                                    		<button class=' w-full bg-transparent text-black px-2 py-1 hover:bg-green-500 hover:opacity-80 transition statusChange'  data-value="Attended">Attended</button>
+	                                    	</div>
+                            			</c:if>
+                                    </c:when>
+                                     <c:when test='${reservation.status eq "Attended"}'>
+                                    	<p class='status text-green-500 mb-2'>Attended</p>
+                                    	<c:if test="${reservation.approvalStatus != 'PASSED'}">
+            								<div class='statusChange flex rounded overflow-hidden border border-gray-500' id="statusButtons-${reservation.id }" >
+	                                    		<button class=' w-full bg-transparent text-black px-2 py-1 hover:bg-green-500 hover:opacity-80 transition statusChange' data-value="Reserved">Reserved</button>
+	                                    		<button class=' w-full bg-transparent text-black px-2 py-1 hover:bg-green-500 hover:opacity-80 transition statusChange' data-value="Missed">Missed</button>
+	                                    		<button class='  w-full bg-green-500 text-white px-2 py-1  opacity-70 pointer-events-none statusChange'  data-value="Attended" disabled>Attended</button>
+                                    		</div>	
+                                    	</c:if>
+
+                                    </c:when>
+                                </c:choose>
+                            </td>
+                            
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -206,7 +250,7 @@
     <c:if test="${totalPages > 1}">
         <div class="pagination flex items-center justify-center gap-2 pt-4">
             <c:forEach begin="1" end="${totalPages}" var="page">
-                <a href="${pageContext.request.contextPath}/AdminDashboard?page=${page}"
+                <a href="${pageContext.request.contextPath}/AdminDashboard?page=${page}<c:if test="!${searchBy eq ''}">&searchBy=${searchBy}</c:if><c:if test="!${searchTerm eq ''}">&searchTerm=${searchTerm}</c:if>"
                    class="px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:bg-gray-300 ${currentPage == page ? 'bg-red-500 text-white pointer-events-none' : ''}">
                     ${page}
                 </a>
@@ -351,7 +395,7 @@ exportForm.addEventListener('submit', function (e) {
 
     
     function handleToggleChange(reservationId, checkbox) {
-        setLoading(true); // Assuming setLoading function is defined elsewhere
+        setLoading(true);
 
         // Prepare data to send
         const status = checkbox.checked ? 'APPROVED' : 'DISAPPROVED';
@@ -380,6 +424,73 @@ exportForm.addEventListener('submit', function (e) {
         alert(error.message);
     });
     }
+    
+    
+     document.querySelectorAll('.statusChange button').forEach(button => {
+         button.addEventListener('click', function() {
+             if (!this.disabled) {
+                 const reservationId = this.parentElement.id.split('-')[1];
+                 const newStatus = this.getAttribute('data-value');
+                 handleStatusChange(reservationId, newStatus);
+             }
+         });
+     });
+     
+     
+     function handleStatusChange(reservationId, newStatus) {
+    	    setLoading(true);
+
+    	    const data = { id: reservationId, status: newStatus, statusUpdate: true };
+
+    	    fetch('/reservation_system/SetReservationStatusServlet', {
+    	        method: 'POST',
+    	        headers: {
+    	            'Content-Type': 'application/json',
+    	        },
+    	        body: JSON.stringify(data),
+    	    })
+    	    .then(response => response.json())
+    	    .then(data => {
+    	        setLoading(false);
+    	        if (data.status === "success") {
+    	            updateStatusUI(reservationId, newStatus);
+    	        } else {
+    	            throw new Error(data.message || 'Something went wrong');
+    	        }
+    	    }).catch(error => {
+    	        console.error('Error:', error);
+    	        setLoading(false);
+    	        alert(error.message);
+    	    });
+    	}
+     
+     function updateStatusUI(reservationId, newStatus) {
+    	    const buttons = document.querySelectorAll(`#statusButtons-${'${reservationId}'} button`);
+    	    
+    	    const statusTextDiv = document.querySelector(`#statusButtons-${'${reservationId}'}`).parentElement.querySelector('.status')
+    	    statusTextDiv.innerText = newStatus;
+    	    if(newStatus === 'Missed'){
+    	    	statusTextDiv.classList.add('text-red-500');
+    	    	statusTextDiv.classList.remove('text-green-500');
+    	    }else{
+    	    	statusTextDiv.classList.remove('text-red-500');
+    	    	statusTextDiv.classList.add('text-green-500');
+    	    }
+
+    	    buttons.forEach(button => {
+    	        if (button.getAttribute('data-value') === newStatus) {
+    	            button.disabled = true;
+    	            button.classList.add('bg-green-500', 'text-white', 'opacity-70', 'pointer-events-none');
+    	            button.classList.remove('bg-transparent', 'text-black', 'hover:bg-green-500', 'hover:opacity-80', 'transition');
+    	        } else {
+    	            button.disabled = false;
+    	            button.classList.add('bg-transparent', 'text-black', 'hover:bg-green-500', 'hover:opacity-80', 'transition');
+    	            button.classList.remove('bg-green-500', 'text-white', 'opacity-70', 'pointer-events-none');
+    	        }
+    	    });
+    	}
+     
+     
 
     function updateUI(reservationId, status) {
 

@@ -83,7 +83,7 @@ public class ExportReservations extends HttpServlet {
         try (PrintWriter writer = response.getWriter()) {
             
             // Write CSV header
-        	 writer.println("Reservation ID,User Id,User Name,User Email,Start Time,End Time,Date,Room ID,Room Name,Table ID,Table Name,Seats Capacity");
+        	 writer.println("Reservation ID,User Id,User Name,User Email,Start Time,End Time,Date,Room ID,Room Name,Table ID,Table Name,Seats Capacity,Approval Status, Status");
             
             // Fetch all tables from the database
         	 
@@ -102,7 +102,7 @@ public class ExportReservations extends HttpServlet {
             
             // Write table data to CSV
             for (Reservation reservation : allReservations) {
-                writer.println(String.format("%d,%d,%s,%s,%s,%s,%s,%d,%s,%d,%s,%s",
+                writer.println(String.format("%d,%d,%s,%s,%s,%s,%s,%d,%s,%d,%s,%s,%s,%s",
 	                reservation.getId(),
 	                reservation.getUserId(),
 	                reservation.getUserName(),
@@ -114,7 +114,11 @@ public class ExportReservations extends HttpServlet {
 	                reservation.getRoomName(),
 	                reservation.getTableId(),
 	                reservation.getTableName(),
-	                reservation.getTableCapacity()));
+	                reservation.getTableCapacity(),
+	                reservation.getApprovalStatus(),
+	                reservation.getStatus()
+            		));
+
             }
         }
 	}

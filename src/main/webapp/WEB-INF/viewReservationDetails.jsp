@@ -59,7 +59,7 @@
             <p class="text-gray-500 mb-2">Time: <span class="text-gray-800 font-semibold block">${reservation.startTime} - ${reservation.endTime}</span></p>
             <div class="border-t border-b border-gray-200 py-4 flex gap-10">
 
-    <p class="text-gray-500">Room &amp; Table: <span class="text-gray-800 font-semibold block">${reservation.roomName} - ${reservation.tableName}</span></p>
+    <p class="text-gray-500">Room &amp; Table: <span class="text-gray-800 font-semibold block">${reservation.roomName} - ${reservation.tableName} - ${reservation.tableCapacity} seats</span></p>
 <c:if test="${reservation.status eq 'Reserved'}">
 	<p class="text-gray-500">
 	    Approval Status: <span class="font-semibold block <%= bgColorClass %> px-2 rounded"><%= approvalStatus %></span>

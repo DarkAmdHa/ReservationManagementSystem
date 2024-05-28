@@ -86,7 +86,7 @@ else if (tableDeleted) {
 						<th class="p-2 text-left text-gray-500 font-medium">Table
 							Name</th>
 						<th class="p-2 text-left text-gray-500 font-medium">Table
-							Capacity</th>
+							Capacity <span class='text-xs'>(seats)</span></th>
 						<th class="p-2 text-left text-gray-500 font-medium">Room Name</th>
 						<th class="p-2 text-left text-gray-500 font-medium">Actions</th>
 					</tr>
@@ -96,7 +96,17 @@ else if (tableDeleted) {
 						<tr
 							class="border-b border-1 border-gray-300 transition hover:bg-gray-200">
 							<td class="p-2">${fn:escapeXml(table.name)}</td>
-							<td class="p-2">${fn:escapeXml(table.capacity)} seats</td>
+
+	                        <td class="p-2 text-left text-gray-500 font-medium">
+                             <c:choose>
+						        <c:when test="${table.capacity >= 10}">
+						            10+
+						        </c:when>
+						        <c:otherwise>
+						            ${table.capacity}
+						        </c:otherwise>
+						    </c:choose>
+                           </td>
 							<td class="p-2">${fn:escapeXml(table.roomName)}</td>
 							<td class="p-2 flex gap-2">
 								<button
